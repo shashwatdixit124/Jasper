@@ -1,4 +1,4 @@
-package Jasper;
+package jasper.helper;
 import java.sql.*;
 
 public class QueryResult {

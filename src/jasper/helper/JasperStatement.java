@@ -1,11 +1,11 @@
-package Jasper;
+package jasper.helper;
 import java.sql.*;
 
 public class JasperStatement {
 	Statement stmt;
-	public JasperStatement(Connection conn){
+	public JasperStatement(JasperConnection conn){
 		try{
-			stmt = conn.createStatement();			
+			stmt = conn.getConnection().createStatement();			
 		}catch(Exception e)
 		{
 			stmt = null;
@@ -22,6 +22,10 @@ public class JasperStatement {
 		{
 			return new QueryResult(QueryResult.ResultType.ERROR, null);
 		}
+	}
+	
+	public Statement getStatement(){
+		return stmt;
 	}
 	
 	public void close(){

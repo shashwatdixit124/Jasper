@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*,Jasper.*" %> 
+<%@ page import="java.sql.*,jasper.helper.*" %> 
 
 <html>
 <head>
@@ -36,15 +36,12 @@ if(request.getMethod().equals("POST"))
 {
 	String uname = request.getParameter("username");
 	String pass = request.getParameter("password");
-	ConnectionResult cr = MySQLUtilities.getConnection(uname, pass);
+	JasperDb db = new JasperDb("",uname,pass);
+	ConnectionResult cr = db.getConnectionResult();
 	if(!cr.isError())
 	{
-		Cookie uname_cookie = new Cookie("uname",uname);
-		Cookie pass_cookie = new Cookie("pass",pass);
-		uname_cookie.setMaxAge(60*60*24);
-		pass_cookie.setMaxAge(60*60*24);
-		response.addCookie(uname_cookie);
-		response.addCookie(pass_cookie);
+		JasperCookie.addCookieToResponse("uname",uname,response);
+		JasperCookie.addCookieToResponse("pass",pass,response);
 		response.sendRedirect("home.jsp");
 	}
 	
@@ -61,11 +58,9 @@ if(request.getMethod().equals("POST"))
 						<div class="alert alert-danger"> Cannot Connect to JDBC </div>
 		
 <%		
-	}
-	
-	MySQLUtilities.closeConnection(cr.getConnection());
+	}	
+	db.close();
 }
-
 %>
 
 						 <form class="form-horizontal" action="./" method="POST">

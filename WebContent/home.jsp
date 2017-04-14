@@ -1,38 +1,18 @@
-<%@ page import="java.sql.*,Jasper.*" %> 
+<%@ page import="java.sql.*,jasper.helper.*" %> 
 
 <%
 	String errorNotification = null;
-	boolean uname_exists = false;
-	boolean pass_exists = false;
 	String uname = null;
 	String pass = null;
-	Cookie cookie = null;
-	Cookie[] cookies = null;
-	cookies = request.getCookies();
-	if(cookies != null)
-	{
-		for (int i = 0; i < cookies.length; i++){
-			cookie = cookies[i];
-			if(!uname_exists && (cookie.getName( )).compareTo("uname") == 0 ){
-				uname_exists = true;
-				uname = cookie.getValue();
-			}
-			if(!pass_exists && (cookie.getName( )).compareTo("pass") == 0 ){
-				pass_exists = true;
-				pass = cookie.getValue();
-			}
-		}
-		
-		if(!uname_exists || !pass_exists)
-		{
-			response.sendRedirect("index.jsp");
-		}
-		
-	}
-	else
-	{
+	JasperCookie cookies = new JasperCookie(request);
+	
+	if(!cookies.exists("uname") || !cookies.exists("uname")){
 		response.sendRedirect("index.jsp");
 	}
+	
+	uname = cookies.getValue("uname");
+	pass = cookies.getValue("pass");
+	
 %>
 
 <html>
@@ -52,11 +32,11 @@
 					<div class="col-xs-12" id="db-list">
 						<div class="row">
 <%
-ConnectionResult cr = MySQLUtilities.getConnection(uname, pass);
+JasperDb db = new JasperDb("",uname,pass);
+ConnectionResult cr = db.getConnectionResult();
 if(!cr.isError()){
 	String query = "SHOW DATABASES";
-	JasperStatement js = new JasperStatement(cr.getConnection());
-	QueryResult qr = js.executeQuery(query);
+	QueryResult qr = db.executeQuery(query);
 
 	if(qr.isError())
 		errorNotification = "Cannot Find Database List";
@@ -64,13 +44,13 @@ if(!cr.isError()){
 		ResultSet rs = qr.getResult();
 		while(rs.next())
 		{
-			String db = rs.getString("Database");
+			String data = rs.getString("Database");
 %>
-							<h4 class="col-xs-12 height-30 db"><% out.print(db); %></h4>
+							<h4 class="col-xs-12 height-30 db"><% out.print(data); %></h4>
 <%
 		}
 	}
-	js.close();
+	db.close();
 }
 %>
 
