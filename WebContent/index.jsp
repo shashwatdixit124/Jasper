@@ -79,16 +79,16 @@ if(request.getMethod().equals("POST")) {
 	         se.printStackTrace();
 	      }//end finally try
 	   }
-} else {
-			HttpSession session = request.getSession(false);
-			String msg = (String)session.getAttribute("error");
-			if(msg != null && !msg.isEmpty())
-			{
+} 
+
+HttpSession sess = request.getSession(false);
+String msg = (String)sess.getAttribute("error");
+if(msg != null && !msg.isEmpty())
+{
 %>
 						<div class="alert alert-danger"> <% out.print(msg); %> </div>
 <%
-						session.removeAttribute("error");
-			}
+	sess.removeAttribute("error");
 }
 %>
 
