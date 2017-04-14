@@ -32,62 +32,52 @@ h1{
 						<h1>Jasper</h1>
 				
 <% 
-if(request.getMethod().equals("POST")) {
+if(request.getMethod().equals("POST")) 
+{
 	String uname = request.getParameter("username");
 	String pass = request.getParameter("password");
 	Connection conn = null;
-	   Statement stmt = null;
-	   try{
-	      
-	      Class.forName("com.mysql.jdbc.Driver");
-
-	      conn = DriverManager.getConnection("jdbc:mysql://localhost/", uname, pass);
-	      
-	      if(conn != null)
-	      {
-	    	  Cookie uname_cookie = new Cookie("uname",uname);
-	    	  Cookie pass_cookie = new Cookie("pass",pass);
-	    	  uname_cookie.setMaxAge(60*60*24);
-	    	  pass_cookie.setMaxAge(60*60*24);
-	    	  response.addCookie(uname_cookie);
-	    	  response.addCookie(pass_cookie);
-	    	  response.sendRedirect("home.jsp");
-	      }
-	      
-	   }catch(SQLException se){
+	try{
+	   
+	   Class.forName("com.mysql.jdbc.Driver");
+	
+	   conn = DriverManager.getConnection("jdbc:mysql://localhost/", uname, pass);
+	   
+	   if(conn != null)
+	   {
+	 	  Cookie uname_cookie = new Cookie("uname",uname);
+	 	  Cookie pass_cookie = new Cookie("pass",pass);
+	 	  uname_cookie.setMaxAge(60*60*24);
+	 	  pass_cookie.setMaxAge(60*60*24);
+	 	  response.addCookie(uname_cookie);
+	 	  response.addCookie(pass_cookie);
+	 	  response.sendRedirect("home.jsp");
+	   }
+	   
+	}catch(SQLException se){
 %>
 
 			<div class="alert alert-danger"> Wrong Username or Password ! </div>
 			
 <%
-	      //Handle errors for JDBC
+	   se.printStackTrace();
+	}catch(Exception e){
+	   e.printStackTrace();
+	}finally{
+	   try{
+	      if(conn!=null)
+	         conn.close();
+	   }catch(SQLException se){
 	      se.printStackTrace();
-	   }catch(Exception e){
-	      //Handle errors for Class.forName
-	      e.printStackTrace();
-	   }finally{
-	      //finally block used to close resources
-	      try{
-	         if(stmt!=null)
-	            stmt.close();
-	      }catch(SQLException se2){
-	      }// nothing we can do
-	      try{
-	         if(conn!=null)
-	            conn.close();
-	      }catch(SQLException se){
-	         se.printStackTrace();
-	      }//end finally try
 	   }
+	}
 } 
 
 HttpSession sess = request.getSession(false);
 String msg = (String)sess.getAttribute("error");
 if(msg != null && !msg.isEmpty())
 {
-%>
-						<div class="alert alert-danger"> <% out.print(msg); %> </div>
-<%
+	out.println(msg);
 	sess.removeAttribute("error");
 }
 %>
