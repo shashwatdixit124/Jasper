@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*" %> 
+<%@ page import="java.sql.*,Jasper.*" %> 
 
 <html>
 <head>
@@ -36,50 +36,36 @@ if(request.getMethod().equals("POST"))
 {
 	String uname = request.getParameter("username");
 	String pass = request.getParameter("password");
-	Connection conn = null;
-	try{
-	   
-	   Class.forName("com.mysql.jdbc.Driver");
+	ConnectionResult cr = MySQLUtilities.getConnection(uname, pass);
+	if(!cr.isError())
+	{
+		Cookie uname_cookie = new Cookie("uname",uname);
+		Cookie pass_cookie = new Cookie("pass",pass);
+		uname_cookie.setMaxAge(60*60*24);
+		pass_cookie.setMaxAge(60*60*24);
+		response.addCookie(uname_cookie);
+		response.addCookie(pass_cookie);
+		response.sendRedirect("home.jsp");
+	}
 	
-	   conn = DriverManager.getConnection("jdbc:mysql://localhost/", uname, pass);
-	   
-	   if(conn != null)
-	   {
-	 	  Cookie uname_cookie = new Cookie("uname",uname);
-	 	  Cookie pass_cookie = new Cookie("pass",pass);
-	 	  uname_cookie.setMaxAge(60*60*24);
-	 	  pass_cookie.setMaxAge(60*60*24);
-	 	  response.addCookie(uname_cookie);
-	 	  response.addCookie(pass_cookie);
-	 	  response.sendRedirect("home.jsp");
-	   }
-	   
-	}catch(SQLException se){
+	if(cr.isConnectionError()){
 %>
 
-			<div class="alert alert-danger"> Wrong Username or Password ! </div>
+						<div class="alert alert-danger"> Wrong Username or Password ! </div>
 			
 <%
-	   se.printStackTrace();
-	}catch(Exception e){
-	   e.printStackTrace();
-	}finally{
-	   try{
-	      if(conn!=null)
-	         conn.close();
-	   }catch(SQLException se){
-	      se.printStackTrace();
-	   }
 	}
-} 
+	else if(cr.isJDBCError()){
+%>
 
-HttpSession sess = request.getSession(false);
-String msg = (String)sess.getAttribute("error");
-if(msg != null && !msg.isEmpty())
-{
-	out.println(msg);
-	sess.removeAttribute("error");
+						<div class="alert alert-danger"> Cannot Connect to JDBC </div>
+		
+<%		
+	}
+	
+	MySQLUtilities.closeConnection(cr.getConnection());
 }
+
 %>
 
 						 <form class="form-horizontal" action="./" method="POST">

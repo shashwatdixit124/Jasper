@@ -1,6 +1,7 @@
-<%@ page import="java.sql.*" %> 
+<%@ page import="java.sql.*,Jasper.*" %> 
 
 <%
+	String errorNotification = null;
 	boolean uname_exists = false;
 	boolean pass_exists = false;
 	String uname = null;
@@ -51,37 +52,25 @@
 					<div class="col-xs-12" id="db-list">
 						<div class="row">
 <%
-Connection conn = null;
-Statement stmt = null;
-try{
-   
-	Class.forName("com.mysql.jdbc.Driver");
-	conn = DriverManager.getConnection("jdbc:mysql://localhost/", uname, pass);
-	stmt = conn.createStatement();
+ConnectionResult cr = MySQLUtilities.getConnection(uname, pass);
+if(!cr.isError()){
 	String query = "SHOW DATABASES";
-	ResultSet rs = stmt.executeQuery(query);
-	while(rs.next())
-	{
-		String db = rs.getString("Database");
+	JasperStatement js = new JasperStatement(cr.getConnection());
+	QueryResult qr = js.executeQuery(query);
+
+	if(qr.isError())
+		errorNotification = "Cannot Find Database List";
+	else{
+		ResultSet rs = qr.getResult();
+		while(rs.next())
+		{
+			String db = rs.getString("Database");
 %>
 							<h4 class="col-xs-12 height-30 db"><% out.print(db); %></h4>
 <%
+		}
 	}
-}catch(SQLException se){
-	
-}finally{
-	try{
-		if(stmt!=null)
-			stmt.close();
-	}catch(SQLException se){
-		se.printStackTrace();
-	}
-	try{
-		if(conn!=null)
-			conn.close();
-	}catch(SQLException se){
-		se.printStackTrace();
-	}
+	js.close();
 }
 %>
 
@@ -96,6 +85,17 @@ try{
 			<!-- Main View for  -->
 			<div class="col-xs-12 col-md-9 col-lg-10" id="main-view">
 				<div class="row">
+				
+<% if(errorNotification != null && !errorNotification.isEmpty()) {%>
+
+					<div class="col-xs-12">
+						<div id="notification">
+							<div class="alert alert-danger"> <% out.print(errorNotification); %> </div>
+						</div>
+					</div>
+					
+<% } %>
+
 					<div class="col-xs-12">
 						<div  id="welcome-note">
 							<h3>Welcome to Jasper</h3>
