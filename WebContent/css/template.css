@@ -16,7 +16,6 @@ body{
 #sidebar{
 	position: fixed;
 	background-color: #fff;
-	box-shadow: 0px 0px 2px #555;
 	overflow-y: auto;
 	height:100%;
 }
@@ -46,6 +45,29 @@ body{
 
 .db:hover{
 	background-color: #f6f6f6;
+}
+
+#action-bar{
+	position: absolute;
+	top: 0;
+	z-index: 10;
+	background-color: #fff;
+}
+
+#action-bar ul{
+	margin: 0;
+	padding: 0;
+}
+
+#action-bar li{
+	text-align: center;
+	display: inline-block;
+	list-decoration: none;
+	text-decoration: none;
+}
+
+#content{
+	margin-top: 70px;
 }
 
 #welcome-note{

@@ -4,6 +4,10 @@
 	String errorNotification = null;
 	String uname = null;
 	String pass = null;
+
+	String dbname = null;
+	dbname = request.getParameter("db");
+	
 	JasperCookie cookies = new JasperCookie(request);
 	
 	if(!cookies.exists("uname") || !cookies.exists("uname")){
@@ -66,19 +70,27 @@ if(!cr.isError()){
 			<!-- Main View for  -->
 			<div class="col-xs-12 col-md-9 col-md-offset-3 col-lg-10 col-lg-offset-2" id="main-view">
 				<div class="row">
-				
-<% if(errorNotification != null && !errorNotification.isEmpty()) {%>
-
-					<div class="col-xs-12">
-						<div id="notification">
-							<div class="alert alert-danger"> <% out.print(errorNotification); %> </div>
+					<div class="col-xs-12 height-70" id="action-bar">
+						<div class="container-fluid">
+							<ul class="action-bar-item">
+								<div class="row">
+									<li class="col-xs-2"><a href="#">Create Table</a></li>
+									<li class="col-xs-2"><a href="#">Drop Database</a></li>
+									<li class="col-xs-2 col-xs-offset-6"><a href="#">Logout</a></li>
+								</div>
+							</ul>
 						</div>
 					</div>
+					<div id="content">
+<% if(errorNotification != null && !errorNotification.isEmpty()) {%>
+						<div class="col-xs-12">
+							<div id="notification">
+								<div class="alert alert-danger"> <% out.print(errorNotification); %> </div>
+							</div>
+						</div>
 					
 <% } %>
 <%
-String dbname = null;
-dbname = request.getParameter("db");
 if(dbname != null && !dbname.isEmpty())
 {
 	db = new JasperDb(dbname,uname,pass);
@@ -90,8 +102,8 @@ if(dbname != null && !dbname.isEmpty())
 	if(!qr.isError())
 	{
 %>
-					<div class="col-xs-12">
-						<div  id="table-list">
+						<div class="col-xs-12">
+							<div  id="table-list">
 <%
 		ResultSet rs = qr.getResult();
 		while(rs.next())
@@ -101,44 +113,45 @@ if(dbname != null && !dbname.isEmpty())
 %>
 					
 							
-								<div class ="col-xs-12 table height-50" >
-									<div class="row">
-										<a href="#">
-											<div class="col-xs-12 col-sm-8 col-md-10 table-name">
-												<% out.print(tname); %>
-											</div>
-										</a>
-										<div class="col-xs-12 col-sm-4 col-md-2">
-											<div class="row">
-												<a href="#">
-													<div class="col-xs-6 table-action">
-														Edit
-													</div>
-												</a>
-												<a href="#">
-													<div class="col-xs-6 table-action">
-														Delete
-													</div>
-												</a>
+									<div class ="col-xs-12 table height-50" >
+										<div class="row">
+											<a href="#">
+												<div class="col-xs-12 col-sm-8 col-md-10 table-name">
+													<% out.print(tname); %>
+												</div>
+											</a>
+											<div class="col-xs-12 col-sm-4 col-md-2">
+												<div class="row">
+													<a href="#">
+														<div class="col-xs-6 table-action">
+															Edit
+														</div>
+													</a>
+													<a href="#">
+														<div class="col-xs-6 table-action">
+															Delete
+														</div>
+													</a>
+												</div>
 											</div>
 										</div>
-									</div>
-								</div> 
+									</div> 
 						
 <%		} %>
+							</div>
 						</div>
-					</div>
 <%
 	}
 } else { 
 %>
-					<div class="col-xs-12">
-						<div  id="welcome-note">
-							<h3>Welcome to Jasper</h3>
-							<h5>New Way of handling your Databases</h5>
+						<div class="col-xs-12">
+							<div  id="welcome-note">
+								<h3>Welcome to Jasper</h3>
+								<h5>New Way of handling your Databases</h5>
+							</div>
 						</div>
-					</div>
 <% } %>
+					</div>
 				</div>
 			</div>
 		</div>
