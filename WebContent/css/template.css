@@ -14,10 +14,11 @@ body{
 .height-30{line-height: 30px;}
 
 #sidebar{
+	position: fixed;
 	background-color: #fff;
 	box-shadow: 0px 0px 2px #555;
 	overflow-y: auto;
-	height:100vh;
+	height:100%;
 }
 
 #jasper{
@@ -62,4 +63,29 @@ body{
 #notification{
 	margin-top: 15px;
 }
+
+#table-list{
+	margin: 15px 0px;
+}
+
+.table{
+	background-color: #f5f5f5;
+	margin: 0;
+}
+
+.table:nth-child(even){
+	background-color: #fbfbfb;
+}
+
+.table-name{
+	font-size: 16px;
+}
+
+.table-action{
+	text-align: center;
+}
+
+
+
+
 

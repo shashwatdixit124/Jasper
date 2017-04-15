@@ -17,7 +17,7 @@
 
 <html>
 <head>
-<title>Jasper | Welcome</title>
+<title>Jasper</title>
 <link rel="stylesheet" type="text/css" href="/Jasper/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/Jasper/css/template.css">
 </head>
@@ -46,9 +46,10 @@ if(!cr.isError()){
 		{
 			String data = rs.getString("Database");
 %>
-							<h4 class="col-xs-12 height-30 db"><% out.print(data); %></h4>
+							<a href="home.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db"><% out.print(data); %></h4></a>
 <%
 		}
+		rs.close();
 	}
 	db.close();
 }
@@ -63,7 +64,7 @@ if(!cr.isError()){
 			</div>
 			
 			<!-- Main View for  -->
-			<div class="col-xs-12 col-md-9 col-lg-10" id="main-view">
+			<div class="col-xs-12 col-md-9 col-md-offset-3 col-lg-10 col-lg-offset-2" id="main-view">
 				<div class="row">
 				
 <% if(errorNotification != null && !errorNotification.isEmpty()) {%>
@@ -75,13 +76,69 @@ if(!cr.isError()){
 					</div>
 					
 <% } %>
-
+<%
+String dbname = null;
+dbname = request.getParameter("db");
+if(dbname != null && !dbname.isEmpty())
+{
+	db = new JasperDb(dbname,uname,pass);
+	if(db.getConnectionResult().isError())
+	{
+		response.sendRedirect("home.jsp");
+	}
+	QueryResult qr = db.executeQuery("SHOW TABLES");
+	if(!qr.isError())
+	{
+%>
+					<div class="col-xs-12">
+						<div  id="table-list">
+<%
+		ResultSet rs = qr.getResult();
+		while(rs.next())
+		{
+			String tname = rs.getString("Tables_in_"+dbname);
+	
+%>
+					
+							
+								<div class ="col-xs-12 table height-50" >
+									<div class="row">
+										<a href="#">
+											<div class="col-xs-12 col-sm-8 col-md-10 table-name">
+												<% out.print(tname); %>
+											</div>
+										</a>
+										<div class="col-xs-12 col-sm-4 col-md-2">
+											<div class="row">
+												<a href="#">
+													<div class="col-xs-6 table-action">
+														Edit
+													</div>
+												</a>
+												<a href="#">
+													<div class="col-xs-6 table-action">
+														Delete
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div> 
+						
+<%		} %>
+						</div>
+					</div>
+<%
+	}
+} else { 
+%>
 					<div class="col-xs-12">
 						<div  id="welcome-note">
 							<h3>Welcome to Jasper</h3>
 							<h5>New Way of handling your Databases</h5>
 						</div>
 					</div>
+<% } %>
 				</div>
 			</div>
 		</div>
