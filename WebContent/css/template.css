@@ -13,7 +13,7 @@ body{
 .height-50{line-height: 50px;}
 .height-30{line-height: 30px;}
 
-#sidebar{
+.sidebar{
 	position: fixed;
 	background-color: #fff;
 	overflow-y: auto;
@@ -28,14 +28,49 @@ body{
 	color: #f9f9f9;
 }
 
+.navigation-widget{
+	cursor: pointer;
+	font-family: "Helvetica Neue",sans;
+	padding: 10px 0px;
+}
+.navigation-widget > .row{
+	margin: 0;
+}
+
+.border-right{
+	border-right: 0.5px solid #f2f2f2;
+}
+
+.border-bottom{
+	border-bottom: 0.5px solid #f2f2f2;
+}
+
+.navigation-icon{
+	color: #3aaf85;
+	line-height: 30px;
+	font-size: 16px;
+	text-align: center;
+}
+
+.navigation-text{
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+	text-align: center;
+}
+
 #db-list{
-	margin: 20px 0px;
+	margin: 0px;
 }
 
 #db-list h4 {
 	margin: 0px;
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+#db-list .active{
+	background-color: #f7f7f7;
 }
 
 .db{
@@ -47,23 +82,44 @@ body{
 	background-color: #f6f6f6;
 }
 
-#action-bar{
+.action-bar{
 	position: absolute;
 	top: 0;
 	z-index: 10;
 	background-color: #fff;
-}
-
-#action-bar ul{
+	height: 70px;
 	margin: 0;
 	padding: 0;
 }
 
-#action-bar li{
+.action-bar .action-list{
+	margin: 0;
+	padding: 0;
+}
+
+.action-bar .action-widget{
+	cursor: pointer;
+	font-family: "Helvetica Neue",sans;
+	padding: 10px;
+	height: 70px;
 	text-align: center;
 	display: inline-block;
 	list-decoration: none;
 	text-decoration: none;
+}
+
+.action-icon{
+	color: #3aaf85;
+	line-height: 30px;
+	font-size: 16px;
+	text-align: center;
+}
+
+.action-text{
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+	text-align: center;
 }
 
 #content{
@@ -95,8 +151,16 @@ body{
 	margin: 0;
 }
 
+.table .border-right{
+	border-right: 0.5px solid #fbfbfb;
+}
+
 .table:nth-child(even){
 	background-color: #fbfbfb;
+}
+
+.table:nth-child(even) .border-right{
+	border-right: 0.5px solid #f5f5f5;
 }
 
 .table-name{
@@ -104,7 +168,14 @@ body{
 }
 
 .table-action{
+	height: 50px;
 	text-align: center;
+	font-size: 16px;
+	padding: 17px 0px;
+}
+
+.table-action:hover{
+	background-color: #fdfdfd;
 }
 
 #cancel-db, #create-db-input, #create-db-submit{

@@ -1,5 +1,5 @@
 package jasper.db;
-
+import jasper.helper.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +33,7 @@ public class Createdb extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		
-		JasperCookie cookies = new JasperCookie(request);
+		JasperCookie cookies = new JasperCookie(request,response);
 		
 		if(!cookies.exists("uname") || !cookies.exists("uname")){
 			response.sendRedirect("index.jsp");
