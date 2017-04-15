@@ -40,8 +40,9 @@ if(request.getMethod().equals("POST"))
 	ConnectionResult cr = db.getConnectionResult();
 	if(!cr.isError())
 	{
-		JasperCookie.addCookieToResponse("uname",uname,response);
-		JasperCookie.addCookieToResponse("pass",pass,response);
+		JasperCookie cookies = new JasperCookie(request,response);
+		cookies.add("uname",uname);
+		cookies.add("pass",pass);
 		response.sendRedirect("home.jsp");
 	}
 	

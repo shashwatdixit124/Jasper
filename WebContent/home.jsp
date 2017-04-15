@@ -8,10 +8,13 @@
 	String dbname = null;
 	int dbCreateStatus = -1;
 	dbname = request.getParameter("db");
+
 	if (request.getParameter("dbCreateStatus") != null) {
 		dbCreateStatus = Integer.parseInt(request.getParameter("dbCreateStatus"));
 	}
-	JasperCookie cookies = new JasperCookie(request);
+	
+		JasperCookie cookies = new JasperCookie(request,response);
+
 	
 	if(!cookies.exists("uname") || !cookies.exists("uname")){
 		response.sendRedirect("index.jsp");
@@ -93,7 +96,7 @@ if(!cr.isError()){
 								<div class="row">
 									<li class="col-xs-2"><a href="#">Create Table</a></li>
 									<li class="col-xs-2"><a href="#">Drop Database</a></li>
-									<li class="col-xs-2 col-xs-offset-6"><a href="#">Logout</a></li>
+									<li class="col-xs-2 col-xs-offset-6"><a href="logout.jsp">Logout</a></li>
 								</div>
 							</ul>
 						</div>

@@ -4,9 +4,13 @@ import javax.servlet.http.*;
 public class JasperCookie {
 	
 	Cookie[] cookies;
+	HttpServletRequest request; 
+	HttpServletResponse response;
 	
-	public JasperCookie(HttpServletRequest request){
-		cookies = request.getCookies();
+	public JasperCookie(HttpServletRequest req, HttpServletResponse res){
+		request = req;
+		response = res;
+		cookies = req.getCookies();
 	}
 	
 	public boolean exists(String key)
@@ -43,9 +47,15 @@ public class JasperCookie {
 		return cookies == null;
 	}
 	
-	public static void addCookieToResponse(String key, String val, HttpServletResponse response){
+	public void add(String key, String val){
 		Cookie c = new Cookie(key,val);
 		c.setMaxAge(60*60*24);
+		response.addCookie(c);
+	}
+	
+	public void remove(String key){
+		Cookie c = new Cookie(key,"");
+		c.setMaxAge(0);
 		response.addCookie(c);
 	}
 }
