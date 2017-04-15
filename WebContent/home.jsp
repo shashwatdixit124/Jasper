@@ -6,8 +6,11 @@
 	String pass = null;
 
 	String dbname = null;
+	int dbCreateStatus = -1;
 	dbname = request.getParameter("db");
-	
+	if (request.getParameter("dbCreateStatus") != null) {
+		dbCreateStatus = Integer.parseInt(request.getParameter("dbCreateStatus"));
+	}
 	JasperCookie cookies = new JasperCookie(request);
 	
 	if(!cookies.exists("uname") || !cookies.exists("uname")){
@@ -62,7 +65,21 @@ if(!cr.isError()){
 						</div>
 					</div>
 					<div class="col-xs-12 " id="create-db-area">
-						<button class="col-xs-12 btn btn-default" id="create-db-btn">Create</button>
+					<form method="get" action="Createdb">
+						<input type="text" name="db-name" placeholder="Enter Database Name" id="create-db-input"  required><br>
+						<input type="Submit" value="Create" class="col-xs-12 btn btn-default" id="create-db-submit">
+					</form>
+						<button class="col-xs-12 btn btn-default" id="create-db-btn" onclick="createDB(this);">Create</button>
+						<button class="col-xs-12 btn btn-default" id="cancel-db" onclick="cancelDB(this);">Cancel</button>
+						<% 
+						if(dbCreateStatus == 1) {
+							out.println("Database Created successfully");
+						} else if (dbCreateStatus == 0) {
+							out.println("Couldn't Create Database");
+						}
+						
+						
+						%>
 					</div>
 				</div>
 			</div>
@@ -156,5 +173,6 @@ if(dbname != null && !dbname.isEmpty())
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="script.js"></script>
 </body>
 </html>

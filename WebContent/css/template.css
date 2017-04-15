@@ -107,6 +107,10 @@ body{
 	text-align: center;
 }
 
+#cancel-db, #create-db-input, #create-db-submit{
+	display: none;
+}
+
 
 
 
