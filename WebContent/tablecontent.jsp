@@ -295,6 +295,5 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="script.js"></script>
 </body>
 </html>
