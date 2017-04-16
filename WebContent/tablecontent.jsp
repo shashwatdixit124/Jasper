@@ -54,7 +54,7 @@
 									</div>
 								</div>
 							</a>
-							<a href="logout.jsp">
+							<a href="logout">
 								<div class="col-xs-6 navigation-widget border-bottom">
 									<div class="row">
 										<div class="col-xs-12 navigation-icon">
