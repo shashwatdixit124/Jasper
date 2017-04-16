@@ -73,9 +73,13 @@ public class InsertInTable extends HttpServlet {
 					String name = rs.getString("COLUMN_NAME");
 					String is_nullable = rs.getString("IS_NULLABLE");
 					String value = request.getParameter(name);
+					String data_type = rs.getString("DATA_TYPE");
+					
 					if (value != null) {
 						if(!is_nullable.equalsIgnoreCase("NO") && value.isEmpty())
 							query = query + "NULL" + ", ";
+						else if(data_type.equals("tinyint"))
+							query = query + value + ", ";
 						else
 							query = query + "'" + value + "'" + ", ";
 					}

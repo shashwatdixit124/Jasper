@@ -311,23 +311,23 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 												<div class="col-xs-12">
 													<table class="col-xs-12">
 												
-<% 	List<String> columns = new ArrayList<String>();
-		db = new JasperDb("information_schema",uname,pass);
-		if(db.getConnectionResult().isError())
-		{
-			response.sendRedirect("home.jsp");
-		}
-		QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
-		if(!qr.isError())
-		{
-			
-			ResultSet rs = qr.getResult();
-			while(rs.next())
-			{
-				String name = rs.getString("COLUMN_NAME");
-				String is_nullable = rs.getString("IS_NULLABLE");
-				String col_type = rs.getString("COLUMN_TYPE");
-				columns.add(name);
+<% 	
+List<String> columns = new ArrayList<String>();
+db = new JasperDb("information_schema",uname,pass);
+if(db.getConnectionResult().isError())
+{
+	response.sendRedirect("home.jsp");
+}
+QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
+if(!qr.isError())
+{
+	ResultSet rs = qr.getResult();
+	while(rs.next())
+	{
+		String name = rs.getString("COLUMN_NAME");
+		String is_nullable = rs.getString("IS_NULLABLE");
+		String col_type = rs.getString("COLUMN_TYPE");
+		columns.add(name);
 %>
 			<tr>
 			<td><label for="<% out.print(name); %>"><% out.print(name);%> </label></td>
@@ -335,10 +335,10 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 			<td><input type="text" name="<% out.print(name); %>" id="<% out.print(name); %>" placeholder="<%if (is_nullable.equals("NO")) {out.print("Can't be empty");} else {out.print("can be empty");}  %>" <% if (is_nullable.equals("NO")) {out.print("required");}  %>></td>
 			</tr>
 <%
-			}
-			rs.close();
-			db.close();
-		}
+	}
+	rs.close();
+	db.close();
+}
 %>
 													</table>
 												</div>
