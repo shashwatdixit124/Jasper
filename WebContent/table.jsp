@@ -176,7 +176,7 @@ if(dbname != null && !dbname.isEmpty())
 															<span class="glyphicon glyphicon-pencil"></span>
 														</div>
 													</a>
-													<a href="#">
+													<a href="#" data-toggle="modal" data-target="#deleteTable">
 														<div class="col-xs-6 table-action">
 															<span class="glyphicon glyphicon-trash"></span>
 														</div>
@@ -201,7 +201,7 @@ if(dbname != null && !dbname.isEmpty())
 										<h4 class="modal-title">Delete <b><% out.print(dbname); %></b></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-danger">This Action cannot be Undone.</div>
+										<div class="alert alert-warning">This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
 										<form class="form-horizontal" action="deleteDatabase" method="POST">
@@ -216,6 +216,32 @@ if(dbname != null && !dbname.isEmpty())
 								</div>
 							</div>
 						</div>
+						
+						<div class="modal fade" id="deleteTable" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Delete <b><% out.print(dbname); %></b></h4>
+									</div>
+									<div class="modal-body">
+										<div class="alert alert-warning">This Action cannot be Undone.</div>
+									</div>
+									<div class="modal-footer">
+										<form class="form-horizontal" action="deleteTable" method="POST">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+												    <input type="submit" value="Delete" class="btn btn-default col-xs-12">
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 			</div>
