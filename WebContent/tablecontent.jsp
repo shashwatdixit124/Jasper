@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*,jasper.helper.*" %> 
+<%@ page import="java.sql.*,jasper.helper.*,java.util.*" %> 
 
 <%
 	String errorNotification = null;
@@ -7,6 +7,8 @@
 
 	String dbname = null;
 	dbname = request.getParameter("db");
+	String tname = null;
+	tname = request.getParameter("table");
 	
 	JasperCookie cookies = new JasperCookie(request,response);
 	
@@ -14,6 +16,8 @@
 		response.sendRedirect("index.jsp");
 	}else if(dbname == null || dbname.isEmpty())
 		response.sendRedirect("home.jsp");
+	else if(tname == null || tname.isEmpty())
+		response.sendRedirect("table.jsp?db="+dbname);
 	
 	uname = cookies.getValue("uname");
 	pass = cookies.getValue("pass");
@@ -103,25 +107,23 @@ if(!cr.isError()){
 							<div class="row">
 								<div class="col-xs-12" id="action-list">
 									<div class="row">
-										<a href="#">
-											<div class="col-xs-2 action-widget border-right">
-												<div class="row">
-													<div class="col-xs-12 action-icon">
-														<span class="glyphicon glyphicon-plus"></span>
-													</div>
-													<div class="col-xs-12 action-text">
-														Create Table
-													</div>
+										<div class="col-xs-2 action-widget border-right"  data-toggle="modal" data-target="#insertInTable">
+											<div class="row">
+												<div class="col-xs-12 action-icon">
+													<span class="glyphicon glyphicon-plus"></span>
+												</div>
+												<div class="col-xs-12 action-text">
+													Insert
 												</div>
 											</div>
-										</a>
-										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#deleteDatabase">
+										</div>
+										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#deleteTable">
 											<div class="row">
 												<div class="col-xs-12 action-icon">
 													<span class="glyphicon glyphicon-trash"></span>
 												</div>
 												<div class="col-xs-12 action-text">
-													Delete Database
+													Delete Table
 												</div>
 											</div>
 										</div>										
@@ -140,74 +142,91 @@ if(!cr.isError()){
 					
 <% } %>
 <%
-if(dbname != null && !dbname.isEmpty())
+if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 {
+	List<String> columns = new ArrayList<String>();
+	db = new JasperDb("information_schema",uname,pass);
+	if(db.getConnectionResult().isError())
+	{
+		response.sendRedirect("home.jsp");
+	}
+	QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
+	if(!qr.isError())
+	{
+%>
+						<div class="col-xs-12">
+							<div  class="col-xs-12 table-content">
+								<table class="table table-stripped">
+									<tr>
+<%
+		ResultSet rs = qr.getResult();
+		while(rs.next())
+		{
+			String name = rs.getString("COLUMN_NAME");
+			columns.add(name);
+%>				
+										<th><% out.print(name); %></th>
+						
+<%		} %>
+										<th></th>
+										<th></th>
+										</tr>
+<%
+		rs.close();
+		db.close();
+	}
 	db = new JasperDb(dbname,uname,pass);
 	if(db.getConnectionResult().isError())
 	{
 		response.sendRedirect("home.jsp");
 	}
-	QueryResult qr = db.executeQuery("SHOW TABLES");
+	qr = db.executeQuery("SELECT * FROM "+tname);
 	if(!qr.isError())
 	{
-%>
-						<div class="col-xs-12">
-							<div  id="table-list">
-<%
 		ResultSet rs = qr.getResult();
 		while(rs.next())
 		{
-			String tname = rs.getString("Tables_in_"+dbname);
-	
 %>
-					
-							
-									<div class ="col-xs-12 table-elem height-50" >
-										<div class="row">
-											<a href="tablecontent.jsp?db=<% out.print(dbname); %>&table=<% out.print(tname); %>">
-												<div class="col-xs-12 col-sm-8 col-md-10 table-name">
-													<% out.print(tname); %>
-												</div>
-											</a>
-											<div class="col-xs-12 col-sm-4 col-md-2">
-												<div class="row">
-													<a href="#">
-														<div class="col-xs-6 table-action border-right">
-															<span class="glyphicon glyphicon-pencil"></span>
-														</div>
-													</a>
-													<a href="#">
-														<div class="col-xs-6 table-action">
-															<span class="glyphicon glyphicon-trash"></span>
-														</div>
-													</a>
-												</div>
-											</div>
-										</div>
-									</div> 
-						
-<%		} %>
+										<tr>
+<%
+			Iterator itr=columns.iterator();
+			while(itr.hasNext())
+			{
+				String column = (String)itr.next();
+				String val = rs.getString(column);
+				out.println("<td>"+val+"</td>");
+			}
+%>
+										<td class="table-content-action border-right"><span class="glyphicon glyphicon-pencil"></span></td>
+										<td class="table-content-action"><span class="glyphicon glyphicon-trash"></span></td>
+										</tr>
+<%
+		}
+		rs.close();
+		db.close();
+	}
+	
+}
+%>
+								</table>
 							</div>
 						</div>
-<%
-	}
-} 
-%>
-						<div class="modal fade" id="deleteDatabase" role="dialog">
+						<div class="modal fade" id="deleteTable" role="dialog">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
 									<div class="modal-header">
 										<button type="button" class="close" data-dismiss="modal">&times;</button>
-										<h4 class="modal-title">Delete <b><% out.print(dbname); %></b></h4>
+										<h4 class="modal-title">Delete <b><% out.print(dbname+"."+tname); %></b></h4>
 									</div>
 									<div class="modal-body">
 										<div class="alert alert-danger">This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
-										<form class="form-horizontal" action="deleteDatabase" method="POST">
+										<form class="form-horizontal" action="deleteTable" method="POST">
 											<div class="form-group">
 												<div class="col-xs-12">
 													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input type="hidden" value="<% out.print(tname); %>" name="table">
 												    <input type="submit" value="Delete" class="btn btn-default col-xs-12">
 												</div>
 											</div>
