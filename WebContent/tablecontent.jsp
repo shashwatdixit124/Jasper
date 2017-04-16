@@ -14,10 +14,15 @@
 	
 	if(!cookies.exists("uname") || !cookies.exists("uname")){
 		response.sendRedirect("index.jsp");
-	}else if(dbname == null || dbname.isEmpty())
+		return;
+	}else if(dbname == null || dbname.isEmpty()){
 		response.sendRedirect("home.jsp");
-	else if(tname == null || tname.isEmpty())
+		return;
+	}
+	else if(tname == null || tname.isEmpty()){
 		response.sendRedirect("table.jsp?db="+dbname);
+		return;
+	}
 	
 	uname = cookies.getValue("uname");
 	pass = cookies.getValue("pass");
