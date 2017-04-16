@@ -176,7 +176,7 @@ if(dbname != null && !dbname.isEmpty())
 															<span class="glyphicon glyphicon-pencil"></span>
 														</div>
 													</a>
-													<a href="#" data-toggle="modal" data-target="#deleteTable">
+													<a href="#" data-toggle="modal" data-target="#deleteTable" onclick="deletehelp(this);" id="<% out.print(tname); %>">
 														<div class="col-xs-6 table-action">
 															<span class="glyphicon glyphicon-trash"></span>
 														</div>
@@ -232,7 +232,7 @@ if(dbname != null && !dbname.isEmpty())
 											<div class="form-group">
 												<div class="col-xs-12">
 													<input type="hidden" value="<% out.print(dbname); %>" name="db">
-													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input type="hidden" name="table" id="deletetable">
 												    <input type="submit" value="Delete" class="btn btn-default col-xs-12">
 												</div>
 											</div>
@@ -247,5 +247,12 @@ if(dbname != null && !dbname.isEmpty())
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+	function deletehelp(e) {
+		var x = document.getElementById("deletetable");
+		x.value = e.id;
+		}
+	
+	</script>
 </body>
 </html>
