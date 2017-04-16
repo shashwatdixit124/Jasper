@@ -53,7 +53,7 @@ public class DeleteTable extends HttpServlet{
 				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
 			}
 			else{
-				notification = "<div class=\"alert alert-warning\">Table Deleted Successfully</div>";
+				notification = "<div class=\"alert alert-success\">Table Deleted Successfully</div>";
 			}
 			System.out.println(notification);
 			response.sendRedirect("table.jsp?db="+dbName);

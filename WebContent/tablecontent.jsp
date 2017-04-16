@@ -157,7 +157,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 %>
 						<div class="col-xs-12">
 							<div  class="col-xs-12 table-content">
-								<table class="table table-stripped">
+								<table class="table">
 									<tr>
 <%
 		ResultSet rs = qr.getResult();
@@ -177,6 +177,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 										<th></th>
 										<th></th>
 										</tr>
+										<tbody>
 <%
 		rs.close();
 		db.close();
@@ -263,6 +264,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 	
 }
 %>
+									</tbody>
 								</table>
 							</div>
 						</div>
@@ -291,53 +293,62 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 							</div>
 						</div>
 						<div class="modal fade" id="insertInTable" role="dialog">
-							<div class="modal-dialog modal-sm">
+							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
 									<div class="modal-header">
 										<button type="button" class="close" data-dismiss="modal">&times;</button>
 										<h4 class="modal-title">Insert</h4>
 									</div>
-									<form class="form-horizontal" action="InsertInTable" method="POST">
+									<form class="form-horizontal" action="insertInTable" method="POST" id="insert-into-table-form">
 										<div class="modal-body">
 											<div class="form-group">
 												<div class="col-xs-12">
 													<input type="hidden" value="<% out.print(dbname); %>" name="db">
 													<input type="hidden" value="<% out.print(tname); %>" name="tname">
-												
-												<% 	List<String> columns = new ArrayList<String>();
-														db = new JasperDb("information_schema",uname,pass);
-														if(db.getConnectionResult().isError())
-														{
-															response.sendRedirect("home.jsp");
-														}
-														QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
-														if(!qr.isError())
-														{
-															
-															ResultSet rs = qr.getResult();
-															while(rs.next())
-															{
-																String name = rs.getString("COLUMN_NAME");
-																String is_nullable = rs.getString("IS_NULLABLE");
-																columns.add(name);							
-														%>		
-															<label for="<% out.print(name); %>"><% out.print(name); %>: </label>
-															<input type="text" name="<% out.print(name); %>" id="<% out.print(name); %>" placeholder="<%if (is_nullable.equals("NO")) {out.print("Can't be empty");} else {out.print("can be empty");}  %>" <% if (is_nullable.equals("NO")) {out.print("required");} else {out.print("required");}  %>>		
-														
-														<% 					
-															} 
-															rs.close();
-															db.close();
-														}
-														
-													
-										%>			
-													
 												</div>
 											</div>
-										</div>
+											<div class="form-group">
+												<div class="col-xs-12">
+													<table class="col-xs-12">
+												
+<% 	List<String> columns = new ArrayList<String>();
+		db = new JasperDb("information_schema",uname,pass);
+		if(db.getConnectionResult().isError())
+		{
+			response.sendRedirect("home.jsp");
+		}
+		QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
+		if(!qr.isError())
+		{
+			
+			ResultSet rs = qr.getResult();
+			while(rs.next())
+			{
+				String name = rs.getString("COLUMN_NAME");
+				String is_nullable = rs.getString("IS_NULLABLE");
+				String col_type = rs.getString("COLUMN_TYPE");
+				columns.add(name);
+%>
+			<tr>
+			<td><label for="<% out.print(name); %>"><% out.print(name);%> </label></td>
+			<td><span class="col-type"><% out.print("[ " + col_type + " ]"); %></span></td>
+			<td><input type="text" name="<% out.print(name); %>" id="<% out.print(name); %>" placeholder="<%if (is_nullable.equals("NO")) {out.print("Can't be empty");} else {out.print("can be empty");}  %>" <% if (is_nullable.equals("NO")) {out.print("required");}  %>></td>
+			</tr>
+<%
+			}
+			rs.close();
+			db.close();
+		}
+%>
+													</table>
+												</div>
+											</div>
 										<div class="modal-footer">
-											<input type="submit" value="Insert" class="btn btn-default col-xs-12">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="submit" value="Insert" class="btn btn-default">
+												</div>
+											</div>
 										</div>
 									</form>
 								</div>

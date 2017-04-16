@@ -14,7 +14,7 @@ import java.sql.*;
 /**
  * Servlet implementation class InsertInTable
  */
-@WebServlet("/InsertInTable")
+@WebServlet("/insertInTable")
 public class InsertInTable extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -44,8 +44,10 @@ public class InsertInTable extends HttpServlet {
 		
 		if(!cookies.exists("uname") || !cookies.exists("uname")){
 			response.sendRedirect("index.jsp");
+			return;
 		}else if(dbName == null || dbName.isEmpty()) {
 			response.sendRedirect("home.jsp");
+			return;
 		}
 			
 		
@@ -59,26 +61,29 @@ public class InsertInTable extends HttpServlet {
 		if(db.getConnectionResult().isError())
 		{
 			response.sendRedirect("home.jsp?error=here");
+			return;
 		}
 		QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbName+"\" and TABLE_NAME = \""+tname+"\"");
 		if(!qr.isError())
 		{
-			
 			ResultSet rs = qr.getResult();
-			
 			try {
-			while(rs.next())
-			{
-				String name = rs.getString("COLUMN_NAME");
-				String is_nullable = rs.getString("IS_NULLABLE");
-				String value = request.getParameter(name);
-				if (value != null) {
-				query = query + "'" + value + "'" + ", ";
+				while(rs.next())
+				{
+					String name = rs.getString("COLUMN_NAME");
+					String is_nullable = rs.getString("IS_NULLABLE");
+					String value = request.getParameter(name);
+					if (value != null) {
+						if(!is_nullable.equalsIgnoreCase("NO") && value.isEmpty())
+							query = query + "NULL" + ", ";
+						else
+							query = query + "'" + value + "'" + ", ";
+					}
 				}
-				
-			}
 			} catch(SQLException ex) {
                 System.err.println("SQLException: " + ex.getMessage());
+                response.sendRedirect("tablecontent.jsp?db=" + dbName + "&table=" + tname);
+                return;
 			}
 
 			query = query.substring(0, query.length()-2);
@@ -87,12 +92,12 @@ public class InsertInTable extends HttpServlet {
 			response.getWriter().print(dbName);
 			response.getWriter().print(tname);
 			response.getWriter().print(query);
-			if(rows != 0){
+			if(rows == 0){
 				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
 				
 			}
 			else{
-				notification = "<div class=\"alert alert-warning\">Database Created Successfully</div>";
+				notification = "<div class=\"alert alert-success\">Row Inserted</div>";
 				
 			}
 			response.sendRedirect("tablecontent.jsp?db=" + dbName + "&table=" + tname);

@@ -222,7 +222,7 @@ if(dbname != null && !dbname.isEmpty())
 								<div class="modal-content">
 									<div class="modal-header">
 										<button type="button" class="close" data-dismiss="modal">&times;</button>
-										<h4 class="modal-title">Delete <b><% out.print(dbname); %></b></h4>
+										<h4 class="modal-title">Delete <b><span id="delete-table-form-table-name">hi</span></b></h4>
 									</div>
 									<div class="modal-body">
 										<div class="alert alert-warning">This Action cannot be Undone.</div>
@@ -249,9 +249,11 @@ if(dbname != null && !dbname.isEmpty())
 	</div>
 	<script type="text/javascript">
 	function deletehelp(e) {
+		var tableName = document.getElementById("delete-table-form-table-name");
+		tableName.innerHTML = e.id;
 		var x = document.getElementById("deletetable");
 		x.value = e.id;
-		}
+	}
 	
 	</script>
 </body>

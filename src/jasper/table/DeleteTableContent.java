@@ -20,7 +20,7 @@ public class DeleteTableContent extends HttpServlet{
 	String uname;
 	String pass;
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		JasperCookie cookies = new JasperCookie(request,response);
 		
@@ -76,7 +76,7 @@ public class DeleteTableContent extends HttpServlet{
 		response.sendRedirect("tablecontent.jsp?db="+dbName+"&table="+tname);
 	}
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		response.sendRedirect("home.jsp");
 	}
