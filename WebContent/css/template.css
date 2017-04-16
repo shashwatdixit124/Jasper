@@ -33,6 +33,11 @@ body{
 	font-family: "Helvetica Neue",sans;
 	padding: 10px 0px;
 }
+
+.navigation-widget:hover{
+	background-color: #f6f6f6;
+}
+
 .navigation-widget > .row{
 	margin: 0;
 }
@@ -92,12 +97,12 @@ body{
 	padding: 0;
 }
 
-.action-bar .action-list{
+.action-list{
 	margin: 0;
 	padding: 0;
 }
 
-.action-bar .action-widget{
+.action-widget{
 	cursor: pointer;
 	font-family: "Helvetica Neue",sans;
 	padding: 10px;
@@ -106,6 +111,10 @@ body{
 	display: inline-block;
 	list-decoration: none;
 	text-decoration: none;
+}
+
+.action-widget:hover{
+	background-color: #f6f6f6;
 }
 
 .action-icon{
@@ -120,6 +129,7 @@ body{
 	line-height: 30px;
 	font-size: 16px;
 	text-align: center;
+	color: #337ab7;
 }
 
 #content{

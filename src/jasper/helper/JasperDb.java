@@ -28,6 +28,22 @@ public class JasperDb {
 		return newStmt.executeQuery(query);
 	}
 	
+	public int executeUpdate(String query){
+		if(usePrev)
+		{
+			usePrev = false;
+			return stmt.executeUpdate(query);
+		}
+		JasperStatement newStmt = new JasperStatement(conn);
+		listJs.add(newStmt);
+		return newStmt.executeUpdate(query);
+	}
+	
+	public void usePrev()
+	{
+		usePrev = true;
+	}
+	
 	public ConnectionResult getConnectionResult(){
 		return cr;
 	}

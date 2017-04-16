@@ -24,6 +24,17 @@ public class JasperStatement {
 		}
 	}
 	
+	public int executeUpdate(String query){
+		if(stmt == null)
+			return 0;
+		try{
+			return stmt.executeUpdate(query);
+		}catch(Exception e)
+		{
+			return 0;
+		}
+	}
+	
 	public Statement getStatement(){
 		return stmt;
 	}

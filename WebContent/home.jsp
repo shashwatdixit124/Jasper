@@ -4,17 +4,8 @@
 	String errorNotification = null;
 	String uname = null;
 	String pass = null;
-
-	String dbname = null;
-	int dbCreateStatus = -1;
-	dbname = request.getParameter("db");
-
-	if (request.getParameter("dbCreateStatus") != null) {
-		dbCreateStatus = Integer.parseInt(request.getParameter("dbCreateStatus"));
-	}
 	
-		JasperCookie cookies = new JasperCookie(request,response);
-
+	JasperCookie cookies = new JasperCookie(request,response);
 	
 	if(!cookies.exists("uname") || !cookies.exists("uname")){
 		response.sendRedirect("index.jsp");
@@ -30,6 +21,8 @@
 <title>Jasper</title>
 <link rel="stylesheet" type="text/css" href="/Jasper/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/Jasper/css/template.css">
+<script src="/Jasper/js/jquery.min.js"></script>
+<script src="/Jasper/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<div class="container-fluid">
@@ -95,23 +88,6 @@ if(!cr.isError()){
 
 						</div>
 					</div>
-					<div class="col-xs-12 " id="create-db-area">
-					<form method="get" action="Createdb">
-						<input type="text" name="db-name" placeholder="Enter Database Name" id="create-db-input"  required><br>
-						<input type="Submit" value="Create" class="col-xs-12 btn btn-default" id="create-db-submit">
-					</form>
-						<button class="col-xs-12 btn btn-default" id="create-db-btn" onclick="createDB(this);">Create</button>
-						<button class="col-xs-12 btn btn-default" id="cancel-db" onclick="cancelDB(this);">Cancel</button>
-<% 
-if(dbCreateStatus == 1) {
-	out.println("Database Created successfully");
-} else if (dbCreateStatus == 0) {
-	out.println("Couldn't Create Database");
-}
-
-
-%>
-					</div>
 				</div>
 			</div>
 			
@@ -123,18 +99,16 @@ if(dbCreateStatus == 1) {
 							<div class="row">
 								<div class="col-xs-12" id="action-list">
 									<div class="row">
-										<a href="#">
-											<div class="col-xs-2 action-widget border-bottom border-right">
-												<div class="row">
-													<div class="col-xs-12 action-icon">
-														<span class="glyphicon glyphicon-plus"></span>
-													</div>
-													<div class="col-xs-12 action-text">
-														Create Database
-													</div>
+										<div class="col-xs-2 action-widget border-bottom border-right"  data-toggle="modal" data-target="#createDatabase">
+											<div class="row">
+												<div class="col-xs-12 action-icon">
+													<span class="glyphicon glyphicon-plus"></span>
+												</div>
+												<div class="col-xs-12 action-text">
+													Create Database
 												</div>
 											</div>
-										</a>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -153,6 +127,28 @@ if(dbCreateStatus == 1) {
 							<div  id="welcome-note">
 								<h3>Welcome to Jasper</h3>
 								<h5>New Way of handling your Databases</h5>
+							</div>
+						</div>
+						<div class="modal fade" id="createDatabase" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Create Database</h4>
+									</div>
+									<form class="form-horizontal" action="createDatabase" method="POST">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input class="col-xs-12" type="text" placeholder="Database name" name="db" required>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<input type="submit" value="Create" class="btn btn-default col-xs-12">
+										</div>
+									</form>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -6,19 +6,14 @@
 	String pass = null;
 
 	String dbname = null;
-	int dbCreateStatus = -1;
 	dbname = request.getParameter("db");
-
-	if (request.getParameter("dbCreateStatus") != null) {
-		dbCreateStatus = Integer.parseInt(request.getParameter("dbCreateStatus"));
-	}
 	
-		JasperCookie cookies = new JasperCookie(request,response);
-
+	JasperCookie cookies = new JasperCookie(request,response);
 	
 	if(!cookies.exists("uname") || !cookies.exists("uname")){
 		response.sendRedirect("index.jsp");
-	}
+	}else if(dbname == null || dbname.isEmpty())
+		response.sendRedirect("home.jsp");
 	
 	uname = cookies.getValue("uname");
 	pass = cookies.getValue("pass");
@@ -30,6 +25,8 @@
 <title>Jasper</title>
 <link rel="stylesheet" type="text/css" href="/Jasper/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/Jasper/css/template.css">
+<script src="/Jasper/js/jquery.min.js"></script>
+<script src="/Jasper/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<div class="container-fluid">
@@ -77,7 +74,7 @@ if(!cr.isError()){
 	QueryResult qr = db.executeQuery(query);
 
 	if(qr.isError())
-		errorNotification = "Cannot Find Database List";
+		errorNotification = "<div class=\"alert alert-danger\">Cannot Find Database List</div>";
 	else{
 		ResultSet rs = qr.getResult();
 		while(rs.next())
@@ -94,23 +91,6 @@ if(!cr.isError()){
 %>
 
 						</div>
-					</div>
-					<div class="col-xs-12 " id="create-db-area">
-					<form method="get" action="Createdb">
-						<input type="text" name="db-name" placeholder="Enter Database Name" id="create-db-input"  required><br>
-						<input type="Submit" value="Create" class="col-xs-12 btn btn-default" id="create-db-submit">
-					</form>
-						<button class="col-xs-12 btn btn-default" id="create-db-btn" onclick="createDB(this);">Create</button>
-						<button class="col-xs-12 btn btn-default" id="cancel-db" onclick="cancelDB(this);">Cancel</button>
-<% 
-if(dbCreateStatus == 1) {
-	out.println("Database Created successfully");
-} else if (dbCreateStatus == 0) {
-	out.println("Couldn't Create Database");
-}
-
-
-%>
 					</div>
 				</div>
 			</div>
@@ -135,18 +115,16 @@ if(dbCreateStatus == 1) {
 												</div>
 											</div>
 										</a>
-										<a href="#">
-											<div class="col-xs-2 action-widget border-right">
-												<div class="row">
-													<div class="col-xs-12 action-icon">
-														<span class="glyphicon glyphicon-trash"></span>
-													</div>
-													<div class="col-xs-12 action-text">
-														Delete Database
-													</div>
+										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#deleteDatabase">
+											<div class="row">
+												<div class="col-xs-12 action-icon">
+													<span class="glyphicon glyphicon-trash"></span>
+												</div>
+												<div class="col-xs-12 action-text">
+													Delete Database
 												</div>
 											</div>
-										</a>
+										</div>										
 									</div>
 								</div>
 							</div>
@@ -156,7 +134,7 @@ if(dbCreateStatus == 1) {
 <% if(errorNotification != null && !errorNotification.isEmpty()) {%>
 						<div class="col-xs-12">
 							<div id="notification">
-								<div class="alert alert-danger"> <% out.print(errorNotification); %> </div>
+								<% out.print(errorNotification); %>
 							</div>
 						</div>
 					
@@ -215,13 +193,31 @@ if(dbname != null && !dbname.isEmpty())
 	}
 } else { 
 %>
-						<div class="col-xs-12">
-							<div  id="welcome-note">
-								<h3>Welcome to Jasper</h3>
-								<h5>New Way of handling your Databases</h5>
+						
+<% } %>
+						<div class="modal fade" id="deleteDatabase" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Delete <b><% out.print(dbname); %></b></h4>
+									</div>
+									<div class="modal-body">
+										<div class="alert alert-danger">This Action cannot be Undone.</div>
+									</div>
+									<div class="modal-footer">
+										<form class="form-horizontal" action="deleteDatabase" method="POST">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+												    <input type="submit" value="Delete" class="btn btn-default col-xs-12">
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
 							</div>
 						</div>
-<% } %>
 					</div>
 				</div>
 			</div>
