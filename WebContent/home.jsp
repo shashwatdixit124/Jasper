@@ -46,7 +46,7 @@
 									</div>
 								</div>
 							</a>
-							<a href="logout.jsp">
+							<a href="logout">
 								<div class="col-xs-6 navigation-widget border-bottom">
 									<div class="row">
 										<div class="col-xs-12 navigation-icon">
@@ -156,6 +156,6 @@ if(!cr.isError()){
 			</div>
 		</div>
 	</div>
-	<!--  <script type="text/javascript" src="script.js"></script> -->
+
 </body>
 </html>

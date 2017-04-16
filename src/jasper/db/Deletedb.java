@@ -46,11 +46,11 @@ public class Deletedb extends HttpServlet{
 		if(!cr.isError()){
 			String query = "DROP DATABASE " + dbName;
 			int rows = db.executeUpdate(query);
-			if(rows != 0){
+			if(rows == 0){
 				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
 			}
 			else{
-				notification = "<div class=\"alert alert-warning\">Database Deleted Successfully</div>";
+				notification = "<div class=\"alert alert-success\">Database Deleted Successfully</div>";
 			}
 			response.sendRedirect("home.jsp");
 		}

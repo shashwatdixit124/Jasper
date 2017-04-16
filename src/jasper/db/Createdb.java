@@ -19,7 +19,6 @@ public class Createdb extends HttpServlet {
 	String dbName;
 	String uname;
 	String pass;
-	int dbCreateStatus;
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -42,11 +41,11 @@ public class Createdb extends HttpServlet {
 		if(!cr.isError()){
 			String query = "CREATE DATABASE " + dbName;
 			int rows = db.executeUpdate(query);
-			if(rows != 0){
+			if(rows == 0){
 				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
 			}
 			else{
-				notification = "<div class=\"alert alert-warning\">Database Created Successfully</div>";
+				notification = "<div class=\"alert alert-success\">Database Created Successfully</div>";
 			}
 			response.sendRedirect("home.jsp");
 		}

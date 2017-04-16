@@ -54,7 +54,7 @@
 									</div>
 								</div>
 							</a>
-							<a href="logout.jsp">
+							<a href="logout">
 								<div class="col-xs-6 navigation-widget border-bottom">
 									<div class="row">
 										<div class="col-xs-12 navigation-icon">
@@ -145,6 +145,7 @@ if(!cr.isError()){
 if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 {
 	List<String> columns = new ArrayList<String>();
+	List<String> data_types = new ArrayList<String>();
 	db = new JasperDb("information_schema",uname,pass);
 	if(db.getConnectionResult().isError())
 	{
@@ -160,10 +161,15 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 									<tr>
 <%
 		ResultSet rs = qr.getResult();
+		if (!rs.isBeforeFirst() ) {    
+		    response.sendRedirect("table.jsp?db="+dbname); 
+		}
 		while(rs.next())
 		{
 			String name = rs.getString("COLUMN_NAME");
+			String type = rs.getString("DATA_TYPE");
 			columns.add(name);
+			data_types.add(type);
 %>				
 										<th><% out.print(name); %></th>
 						
@@ -189,16 +195,65 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 %>
 										<tr>
 <%
-			Iterator itr=columns.iterator();
+			Iterator itr = columns.iterator();
+			Iterator itr2 = data_types.iterator();
+			String where_clause = "";
 			while(itr.hasNext())
 			{
 				String column = (String)itr.next();
+				String type = (String)itr2.next();
 				String val = rs.getString(column);
+				
+				if(type.equals("char") || type.equals("varchar") || type.equals("enum") || 
+					type.equals("text") || type.equals("blob") || type.equals("set") ||
+					type.equals("binary") || type.equals("varbinary") || type.equals("date") ||
+					type.equals("datetime") || type.equals("timestamp") || type.equals("year"))
+				{
+					where_clause += column+"=\""+val+"\"";
+				}
+				else
+				{
+					where_clause += column+"="+val;
+				}
+				
+				if(itr.hasNext())
+				{
+					where_clause += " and ";
+				}
 				out.println("<td>"+val+"</td>");
 			}
+			long len = where_clause.length();
+			String convData = "";
+			char ch ;
+			int temp;
+			String str = "";
+			for(int i = 0;i<len;i++)
+			{
+				ch = where_clause.charAt(i);
+				temp = (int)ch;
+				str = Integer.toString(temp);
+				if(str.length() == 2)
+					str = "0" + str;
+				else if(str.length() == 1)
+					str = "00" + str;
+				convData += str;
+			}
 %>
-										<td class="table-content-action border-right"><span class="glyphicon glyphicon-pencil"></span></td>
-										<td class="table-content-action"><span class="glyphicon glyphicon-trash"></span></td>
+											<td class="table-content-action border-right">
+												<a href="#">
+													<div class="table-content-action-icon">
+														<span class="glyphicon glyphicon-pencil"></span>
+													</div>
+												</a>
+											</td>
+											<td class="table-content-action border-right">
+												<a href="deleteTableContent?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
+													<div class="table-content-action-icon">
+														<span class="glyphicon glyphicon-trash"></span>
+													</div>
+												</a>
+											</td>
+											
 										</tr>
 <%
 		}
@@ -219,7 +274,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 										<h4 class="modal-title">Delete <b><% out.print(dbname+"."+tname); %></b></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-danger">This Action cannot be Undone.</div>
+										<div class="alert alert-warning">This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
 										<form class="form-horizontal" action="deleteTable" method="POST">
@@ -293,6 +348,5 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="script.js"></script>
 </body>
 </html>
