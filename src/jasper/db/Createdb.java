@@ -42,11 +42,12 @@ public class Createdb extends HttpServlet {
 			String query = "CREATE DATABASE " + dbName;
 			int rows = db.executeUpdate(query);
 			if(rows == 0){
-				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
+				notification = "<div class=\"alert alert-warning\">Error Creating Database</div>";
 			}
 			else{
 				notification = "<div class=\"alert alert-success\">Database Created Successfully</div>";
 			}
+			request.getSession().setAttribute("message", notification);
 			response.sendRedirect("home.jsp");
 		}
 		

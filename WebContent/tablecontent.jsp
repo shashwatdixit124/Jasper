@@ -1,7 +1,9 @@
 <%@ page import="java.sql.*,jasper.helper.*,java.util.*" %> 
 
 <%
-	String errorNotification = null;
+	String errorNotification = (String)session.getAttribute("message");
+	session.removeAttribute("message");
+	
 	String uname = null;
 	String pass = null;
 
@@ -151,6 +153,8 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 {
 	List<String> columns = new ArrayList<String>();
 	List<String> data_types = new ArrayList<String>();
+	List<String> is_nullable = new ArrayList<String>();
+	
 	db = new JasperDb("information_schema",uname,pass);
 	if(db.getConnectionResult().isError())
 	{
@@ -173,8 +177,10 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 		{
 			String name = rs.getString("COLUMN_NAME");
 			String type = rs.getString("DATA_TYPE");
+			String nullable = rs.getString("IS_NULLABLE");
 			columns.add(name);
 			data_types.add(type);
+			is_nullable.add(nullable);
 %>				
 										<th><% out.print(name); %></th>
 						
@@ -203,23 +209,26 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 <%
 			Iterator itr = columns.iterator();
 			Iterator itr2 = data_types.iterator();
+			Iterator itr3 = is_nullable.iterator();
 			String where_clause = "";
 			while(itr.hasNext())
 			{
 				String column = (String)itr.next();
 				String type = (String)itr2.next();
+				String nullable = (String)itr3.next();
 				String val = rs.getString(column);
-				
-				if(type.equals("char") || type.equals("varchar") || type.equals("enum") || 
-					type.equals("text") || type.equals("blob") || type.equals("set") ||
-					type.equals("binary") || type.equals("varbinary") || type.equals("date") ||
-					type.equals("datetime") || type.equals("timestamp") || type.equals("year"))
+				System.out.println(val);
+				if(rs.wasNull())
 				{
-					where_clause += column+"=\""+val+"\"";
+					where_clause += column+"=NULL";
+				} 
+				else if(type.equals("typeint"))
+				{
+					where_clause += column+"="+val;
 				}
 				else
 				{
-					where_clause += column+"="+val;
+					where_clause += column+"='"+val+"'";
 				}
 				
 				if(itr.hasNext())

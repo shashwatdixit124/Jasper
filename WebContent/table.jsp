@@ -1,7 +1,8 @@
 <%@ page import="java.sql.*,jasper.helper.*" %> 
 
 <%
-	String errorNotification = null;
+	String errorNotification = (String)session.getAttribute("message");
+	session.removeAttribute("message");
 	String uname = null;
 	String pass = null;
 

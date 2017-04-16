@@ -93,17 +93,19 @@ public class InsertInTable extends HttpServlet {
 			query = query.substring(0, query.length()-2);
 			query = query + ")";
 			int rows = db1.executeUpdate(query);
-			response.getWriter().print(dbName);
-			response.getWriter().print(tname);
-			response.getWriter().print(query);
 			if(rows == 0){
-				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
-				
+				notification = "<div class=\"alert alert-danger\">"+
+									"Error Inserting Row<br>"+
+									query+
+								"</div>";
 			}
 			else{
-				notification = "<div class=\"alert alert-success\">Row Inserted</div>";
-				
+				notification = "<div class=\"alert alert-success\">"+
+									"Row Inserted<br>"+
+									query+
+								"</div>";
 			}
+			request.getSession().setAttribute("message", notification);
 			response.sendRedirect("tablecontent.jsp?db=" + dbName + "&table=" + tname);
 		}
 			

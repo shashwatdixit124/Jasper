@@ -66,13 +66,20 @@ public class DeleteTableContent extends HttpServlet{
 		if(!cr.isError()){
 			String query = "DELETE FROM " + tname + " WHERE " + actualData;
 			int rows = db.executeUpdate(query);
-			if(rows != 0){
-				notification = "<div class=\"alert alert-warning\">0 rows Affected</div>";
+			if(rows == 0){
+				notification = "<div class=\"alert alert-danger\">"+
+									"Error Deleting Data<br>"+
+									query+
+								"</div>";
 			}
 			else{
-				notification = "<div class=\"alert alert-success\">Deleted Successfully</div>";
+				notification = "<div class=\"alert alert-success\">"+
+									"Deleted Successfully<br>"+
+									query+
+								"</div>";
 			}
 		}
+		request.getSession().setAttribute("message", notification);
 		response.sendRedirect("tablecontent.jsp?db="+dbName+"&table="+tname);
 	}
 	

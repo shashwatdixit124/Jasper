@@ -22,8 +22,8 @@ public class JasperConnection {
 			}catch(Exception e){
 				return new ConnectionResult(ConnectionResult.ResultType.JDBCERROR,null,"Cannot Initialise JDBC Instance");
 			}
-		   conn = DriverManager.getConnection("jdbc:mysql://localhost/"+db, uname, pass);
-		   return new ConnectionResult(ConnectionResult.ResultType.OK,conn,"Success");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/"+db, uname, pass);
+		    return new ConnectionResult(ConnectionResult.ResultType.OK,conn,"Success");
 			   
 		}catch(SQLException se){
 			close();
