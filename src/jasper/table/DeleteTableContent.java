@@ -64,18 +64,18 @@ public class DeleteTableContent extends HttpServlet{
 		JasperDb db = new JasperDb(dbName,uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
-			String query = "DELETE FROM " + tname + " WHERE " + actualData;
+			String query = "DELETE FROM `" + tname + "` WHERE " + actualData + " LIMIT 1";
 			int rows = db.executeUpdate(query);
 			if(rows == 0){
 				notification = "<div class=\"alert alert-danger\">"+
 									"Error Deleting Data<br>"+
-									query+
+									query+";"+
 								"</div>";
 			}
 			else{
 				notification = "<div class=\"alert alert-success\">"+
 									"Deleted Successfully<br>"+
-									query+
+									query+";"+
 								"</div>";
 			}
 		}

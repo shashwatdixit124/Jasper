@@ -132,14 +132,11 @@ if(!cr.isError()){
 						</div>
 					</div>
 					<div id="content">
-<% if(errorNotification != null && !errorNotification.isEmpty()) {%>
 						<div class="col-xs-12">
 							<div id="notification">
-								<% out.print(errorNotification); %>
+<% if(errorNotification != null && !errorNotification.isEmpty()) { out.print(errorNotification); }%>
 							</div>
 						</div>
-					
-<% } %>
 <%
 if(dbname != null && !dbname.isEmpty())
 {

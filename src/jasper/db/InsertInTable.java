@@ -57,7 +57,7 @@ public class InsertInTable extends HttpServlet {
 		String notification = null;
 		JasperDb db = new JasperDb("information_schema",uname,pass);
 		JasperDb db1 = new JasperDb(dbName, uname, pass);
-		String query = "INSERT INTO " + tname + " VALUES(";
+		String query = "INSERT INTO `" + tname + "` VALUES ( ";
 		if(db.getConnectionResult().isError())
 		{
 			response.sendRedirect("home.jsp?error=here");
@@ -91,18 +91,18 @@ public class InsertInTable extends HttpServlet {
 			}
 
 			query = query.substring(0, query.length()-2);
-			query = query + ")";
+			query = query + " )";
 			int rows = db1.executeUpdate(query);
 			if(rows == 0){
 				notification = "<div class=\"alert alert-danger\">"+
 									"Error Inserting Row<br>"+
-									query+
+									query+";"+
 								"</div>";
 			}
 			else{
 				notification = "<div class=\"alert alert-success\">"+
 									"Row Inserted<br>"+
-									query+
+									query+";"+
 								"</div>";
 			}
 			request.getSession().setAttribute("message", notification);

@@ -4,6 +4,8 @@
 	String errorNotification = (String)session.getAttribute("message");
 	session.removeAttribute("message");
 	
+	boolean isTableEmpty = false;
+	
 	String uname = null;
 	String pass = null;
 
@@ -140,14 +142,11 @@ if(!cr.isError()){
 						</div>
 					</div>
 					<div id="content">
-<% if(errorNotification != null && !errorNotification.isEmpty()) {%>
 						<div class="col-xs-12">
 							<div id="notification">
-								<% out.print(errorNotification); %>
+<% if(errorNotification != null && !errorNotification.isEmpty()) { out.print(errorNotification); }%>
 							</div>
 						</div>
-					
-<% } %>
 <%
 if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 {
@@ -202,57 +201,64 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 	if(!qr.isError())
 	{
 		ResultSet rs = qr.getResult();
-		while(rs.next())
+		if(rs.isBeforeFirst())
 		{
+			while(rs.next())
+			{
 %>
 										<tr>
 <%
-			Iterator itr = columns.iterator();
-			Iterator itr2 = data_types.iterator();
-			Iterator itr3 = is_nullable.iterator();
-			String where_clause = "";
-			while(itr.hasNext())
-			{
-				String column = (String)itr.next();
-				String type = (String)itr2.next();
-				String nullable = (String)itr3.next();
-				String val = rs.getString(column);
-				System.out.println(val);
-				if(rs.wasNull())
+				Iterator itr = columns.iterator();
+				Iterator itr2 = data_types.iterator();
+				Iterator itr3 = is_nullable.iterator();
+				String where_clause = "";
+				boolean is_null = false;
+				while(itr.hasNext())
 				{
-					where_clause += column+"=NULL";
-				} 
-				else if(type.equals("typeint"))
-				{
-					where_clause += column+"="+val;
+					String column = (String)itr.next();
+					String type = (String)itr2.next();
+					String nullable = (String)itr3.next();
+					String val = rs.getString(column);
+					is_null = rs.wasNull();
+					if(is_null)
+					{
+						System.out.println(val);
+						where_clause += column+" IS NULL";
+					} 
+					else if(type.equals("tinyint"))
+					{
+						where_clause += column+"="+val;
+					}
+					else
+					{
+						where_clause += column+"='"+val+"'";
+					}
+					
+					if(itr.hasNext())
+					{
+						where_clause += " and ";
+					}
+					if(is_null)
+						out.println("<td>NULL</td>");
+					else
+						out.println("<td>"+val+"</td>");
 				}
-				else
+				long len = where_clause.length();
+				String convData = "";
+				char ch ;
+				int temp;
+				String str = "";
+				for(int i = 0;i<len;i++)
 				{
-					where_clause += column+"='"+val+"'";
+					ch = where_clause.charAt(i);
+					temp = (int)ch;
+					str = Integer.toString(temp);
+					if(str.length() == 2)
+						str = "0" + str;
+					else if(str.length() == 1)
+						str = "00" + str;
+					convData += str;
 				}
-				
-				if(itr.hasNext())
-				{
-					where_clause += " and ";
-				}
-				out.println("<td>"+val+"</td>");
-			}
-			long len = where_clause.length();
-			String convData = "";
-			char ch ;
-			int temp;
-			String str = "";
-			for(int i = 0;i<len;i++)
-			{
-				ch = where_clause.charAt(i);
-				temp = (int)ch;
-				str = Integer.toString(temp);
-				if(str.length() == 2)
-					str = "0" + str;
-				else if(str.length() == 1)
-					str = "00" + str;
-				convData += str;
-			}
 %>
 											<td class="table-content-action border-right">
 												<a href="#">
@@ -271,6 +277,10 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 											
 										</tr>
 <%
+			}
+		}
+		else{
+			isTableEmpty = true;
 		}
 		rs.close();
 		db.close();
@@ -357,10 +367,11 @@ if(!qr.isError())
 													</table>
 												</div>
 											</div>
-										<div class="modal-footer">
-											<div class="form-group">
-												<div class="col-xs-12">
-													<input type="submit" value="Insert" class="btn btn-default">
+											<div class="modal-footer">
+												<div class="form-group">
+													<div class="col-xs-12">
+														<input type="submit" value="Insert" class="btn btn-default">
+													</div>
 												</div>
 											</div>
 										</div>
@@ -373,5 +384,16 @@ if(!qr.isError())
 			</div>
 		</div>
 	</div>
+<%
+	if(isTableEmpty)
+	{
+%>
+	<script type="text/javascript">
+		var notification_area = document.getElementById("notification");
+		notification_area.innerHTML += "<div class=\"alert alert-warning\">Empty Table</div>";
+	</script>
+<%
+	}
+%>
 </body>
 </html>
