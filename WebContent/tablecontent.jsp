@@ -263,7 +263,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 												</div>
 											</td>
 											<td class="table-content-action border-right">
-												<a href="deleteTableContent?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
+												<a href="deleteInTable?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
 													<div class="table-content-action-icon">
 														<span class="glyphicon glyphicon-trash"></span>
 													</div>

@@ -1,4 +1,4 @@
-package jasper.table;
+package jasper.db;
 
 import java.io.IOException;
 
@@ -12,8 +12,8 @@ import jasper.helper.ConnectionResult;
 import jasper.helper.JasperCookie;
 import jasper.helper.JasperDb;
 
-@WebServlet("/deleteTableContent")
-public class DeleteTableContent extends HttpServlet{
+@WebServlet("/deleteInTable")
+public class DeleteInTable extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	String dbName;
 	String tname;
