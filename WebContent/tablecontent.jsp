@@ -152,7 +152,6 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 {
 	List<String> columns = new ArrayList<String>();
 	List<String> data_types = new ArrayList<String>();
-	List<String> is_nullable = new ArrayList<String>();
 	
 	db = new JasperDb("information_schema",uname,pass);
 	if(db.getConnectionResult().isError())
@@ -179,7 +178,6 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 			String nullable = rs.getString("IS_NULLABLE");
 			columns.add(name);
 			data_types.add(type);
-			is_nullable.add(nullable);
 %>				
 										<th><% out.print(name); %></th>
 						
@@ -210,19 +208,16 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 <%
 				Iterator itr = columns.iterator();
 				Iterator itr2 = data_types.iterator();
-				Iterator itr3 = is_nullable.iterator();
 				String where_clause = "";
 				boolean is_null = false;
 				while(itr.hasNext())
 				{
 					String column = (String)itr.next();
 					String type = (String)itr2.next();
-					String nullable = (String)itr3.next();
 					String val = rs.getString(column);
 					is_null = rs.wasNull();
 					if(is_null)
 					{
-						System.out.println(val);
 						where_clause += column+" IS NULL";
 					} 
 					else if(type.equals("tinyint"))
@@ -241,7 +236,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 					if(is_null)
 						out.println("<td>NULL</td>");
 					else
-						out.println("<td>"+val+"</td>");
+						out.println("<td class='table-data-value' id='"+column+"'>"+val+"</td>");
 				}
 				long len = where_clause.length();
 				String convData = "";
@@ -261,11 +256,11 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 				}
 %>
 											<td class="table-content-action border-right">
-												<a href="#">
+												<div data-toggle="modal" data-target="#editTableContent" onClick="updateEditForm(this)">
 													<div class="table-content-action-icon">
 														<span class="glyphicon glyphicon-pencil"></span>
 													</div>
-												</a>
+												</div>
 											</td>
 											<td class="table-content-action border-right">
 												<a href="deleteTableContent?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
@@ -316,6 +311,42 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 								</div>
 							</div>
 						</div>
+						
+<%
+String tableForInserting = "";
+db = new JasperDb("information_schema",uname,pass);
+if(db.getConnectionResult().isError())
+{
+	session.setAttribute("message", "<div class='alert alert-danger'>Error in Connecting to Database information_schema</div>");
+	response.sendRedirect("home.jsp");
+}
+QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
+if(!qr.isError())
+{
+	tableForInserting += "<table class='col-xs-12'>";
+	ResultSet rs = qr.getResult();
+	while(rs.next())
+	{
+		String name = rs.getString("COLUMN_NAME");
+		String is_nullable = rs.getString("IS_NULLABLE");
+		String col_type = rs.getString("COLUMN_TYPE");
+		
+		tableForInserting += "<tr>";
+		tableForInserting += "<td><label for='" + name + "'> " + name + "</label></td>";
+		tableForInserting += "<td><span class='col-type'> [ " + col_type + " ] </span></td>";
+		String placeHolder = null;
+		String required = "";
+		if (is_nullable.equals("NO")) {placeHolder = "Can't be empty";} else { placeHolder = "can be empty";}
+		if (is_nullable.equals("NO")) {required = "required";}
+		tableForInserting += "<td><input type='text' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+		tableForInserting += "</tr>";
+	}
+	tableForInserting += "</table>";
+	rs.close();
+	db.close();
+}
+%>
+						
 						<div class="modal fade" id="insertInTable" role="dialog">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
@@ -333,38 +364,9 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 											</div>
 											<div class="form-group">
 												<div class="col-xs-12">
-													<table class="col-xs-12">
-												
-<% 	
-List<String> columns = new ArrayList<String>();
-db = new JasperDb("information_schema",uname,pass);
-if(db.getConnectionResult().isError())
-{
-	response.sendRedirect("home.jsp");
-}
-QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
-if(!qr.isError())
-{
-	ResultSet rs = qr.getResult();
-	while(rs.next())
-	{
-		String name = rs.getString("COLUMN_NAME");
-		String is_nullable = rs.getString("IS_NULLABLE");
-		String col_type = rs.getString("COLUMN_TYPE");
-		columns.add(name);
-%>
-			<tr>
-			<td><label for="<% out.print(name); %>"><% out.print(name);%> </label></td>
-			<td><span class="col-type"><% out.print("[ " + col_type + " ]"); %></span></td>
-			<td><input type="text" name="<% out.print(name); %>" id="<% out.print(name); %>" placeholder="<%if (is_nullable.equals("NO")) {out.print("Can't be empty");} else {out.print("can be empty");}  %>" <% if (is_nullable.equals("NO")) {out.print("required");}  %>></td>
-			</tr>
-<%
-	}
-	rs.close();
-	db.close();
-}
-%>
-													</table>
+													
+												<% out.print(tableForInserting); %>
+													
 												</div>
 											</div>
 											<div class="modal-footer">
@@ -379,6 +381,42 @@ if(!qr.isError())
 								</div>
 							</div>
 						</div>
+						
+						<div class="modal fade" id="editTableContent" role="dialog">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Update</h4>
+									</div>
+									<form class="form-horizontal" action="updateInTable" method="POST" id="update-into-table-form">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input type="hidden" value="<% out.print(tname); %>" name="tname">
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-xs-12">
+														
+													<% out.print(tableForInserting); %>
+														
+												</div>
+											</div>
+											<div class="modal-footer">
+												<div class="form-group">
+													<div class="col-xs-12">
+														<input type="submit" value="Update" class="btn btn-default">
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -395,5 +433,14 @@ if(!qr.isError())
 <%
 	}
 %>
+
+	<script type="text/javascript">
+		function updateEditForm(e)
+		{
+			$.each($(e).parent().parent().children("td.table-data-value"),function(key,value){
+				$("#update-into-table-form").find("input#"+value.id)[0].value = value.innerHTML
+			});
+		}
+	</script>
 </body>
 </html>

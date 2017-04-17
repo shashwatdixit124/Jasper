@@ -109,7 +109,7 @@ public class InsertInTable extends HttpServlet {
 			response.sendRedirect("tablecontent.jsp?db=" + dbName + "&table=" + tname);
 		}
 			
-		}
+	}
 
 }
 
