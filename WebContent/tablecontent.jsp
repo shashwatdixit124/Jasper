@@ -210,11 +210,14 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 				Iterator itr2 = data_types.iterator();
 				String where_clause = "";
 				boolean is_null = false;
+				String column =null;
+				String type =null;
+				String val =null;
 				while(itr.hasNext())
 				{
-					String column = (String)itr.next();
-					String type = (String)itr2.next();
-					String val = rs.getString(column);
+					column = (String)itr.next();
+					type = (String)itr2.next();
+					val = rs.getString(column);
 					is_null = rs.wasNull();
 					if(is_null)
 					{
@@ -233,8 +236,9 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 					{
 						where_clause += " and ";
 					}
+					
 					if(is_null)
-						out.println("<td>NULL</td>");
+						out.println("<td class='table-data-value' id='"+column+"'>NULL</td>");
 					else
 						out.println("<td class='table-data-value' id='"+column+"'>"+val+"</td>");
 				}
@@ -256,14 +260,14 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 				}
 %>
 											<td class="table-content-action border-right">
-												<div data-toggle="modal" data-target="#editTableContent" onClick="updateEditForm(this)">
+												<div title="Edit" id="<% out.print(convData); %>" data-toggle="modal" data-target="#editTableContent" onClick="updateEditForm(this)">
 													<div class="table-content-action-icon">
 														<span class="glyphicon glyphicon-pencil"></span>
 													</div>
 												</div>
 											</td>
 											<td class="table-content-action border-right">
-												<a href="deleteInTable?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
+												<a title="Delete" href="deleteInTable?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
 													<div class="table-content-action-icon">
 														<span class="glyphicon glyphicon-trash"></span>
 													</div>
@@ -395,6 +399,7 @@ if(!qr.isError())
 												<div class="col-xs-12">
 													<input type="hidden" value="<% out.print(dbname); %>" name="db">
 													<input type="hidden" value="<% out.print(tname); %>" name="tname">
+													<input type="hidden" name="data" id="where-clause">
 												</div>
 											</div>
 											<div class="form-group">
@@ -440,6 +445,8 @@ if(!qr.isError())
 			$.each($(e).parent().parent().children("td.table-data-value"),function(key,value){
 				$("#update-into-table-form").find("input#"+value.id)[0].value = value.innerHTML
 			});
+			$("#update-into-table-form").find("input")[2].value = e.id;
+			console.log($("#update-into-table-form").find("input")[2]);
 		}
 	</script>
 </body>
