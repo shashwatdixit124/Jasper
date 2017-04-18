@@ -208,7 +208,7 @@ if(dbname != null && !dbname.isEmpty())
 												<div class="col-xs-12">
 
 													<label for="table-name">Table Name : </label>
-													<input type="text" placeholder="Ex: UsersTable" id="table-name" name="table-name" required>
+													<input type="text" placeholder="Ex: UsersTable" id="table-name" name="table" required>
 
 												</div>
 											</div>
@@ -222,7 +222,7 @@ if(dbname != null && !dbname.isEmpty())
 	    <th>Length/Values</th>
 	    <th>Default</th>
 	    <th>Attributes</th>
-	    <th><abbr title="Can be NULL if checked, NOT NULL if unchecked">Null</th>
+	    <th><abbr title="Can be NULL if checked, NOT NULL if unchecked">Null</abbr></th>
 	    <th>Index</th>
 	    <th><abbr title="AUTO_INCREMENT">A_I</abbr></th>
 	</tr>
@@ -288,25 +288,43 @@ if(dbname != null && !dbname.isEmpty())
 				</optgroup>
 			</select>
 		</td>
-		<td class="center"><input id="field_0_3" name="field_length" size="8" value="" class="textfield" type="text"><p class="enum_notice" id="enum_notice_0_3" style="display: none;"><a href="#" class="open_enum_editor">Edit ENUM/SET values</a></p></td>
-		<td class="center"><select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);"><option value="NONE">None</option>
-		            <option value="USER_DEFINED">As defined:</option>
-		            <option value="NULL">NULL</option>
-		            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option></select>
-		<input name="field_default_value" size="12" value="" class="textfield default_value" style="display: none;" type="text" id="field_default_value"></td>
-		<td class="center"><select style="width: 7em;" name="field_attribute" id="field_0_5"><option value="" selected="selected"></option>
-		            <option value="BINARY">BINARY</option>
-		            <option value="UNSIGNED">UNSIGNED</option>
-		            <option value="UNSIGNED ZEROFILL">UNSIGNED ZEROFILL</option>
-		            <option value="on update CURRENT_TIMESTAMP">on update CURRENT_TIMESTAMP</option></select></td>
-		<td class="center"><input name="field_null" id="field_0_6" value="NULL" class="allow_null" type="checkbox"></td>
-		    <td class="center"><select name="field_key" id="field_0_7" data-index=""><option value="none_0">---</option>
-		    <option value="primary_0" title="Primary">PRIMARY</option>
-		    <option value="unique_0" title="Unique">UNIQUE</option>
-		    <option value="index_0" title="Index">INDEX</option>
-		            <option value="fulltext_0" title="Fulltext">FULLTEXT</option>
-		        <option value="spatial_0" title="Spatial">SPATIAL</option></select></td>
-		<td class="center"><input name="field_extra" id="field_0_8" value="AUTO_INCREMENT" type="checkbox"></td>
+		<td class="center">
+			<input id="field_0_3" name="field_length" size="8" value="" class="textfield" type="text">
+		</td>
+		<td class="center">
+			<select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);">
+				<option value="NONE">None</option>
+	            <option value="USER_DEFINED">As defined:</option>
+	            <option value="NULL">NULL</option>
+	            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
+            </select>
+			<input name="field_default_value" size="12" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
+		</td>
+		<td class="center">
+			<select style="width: 7em;" name="field_attribute" id="field_0_5">
+				<option value="" selected="selected"></option>
+	            <option value="BINARY">BINARY</option>
+	            <option value="UNSIGNED">UNSIGNED</option>
+	            <option value="UNSIGNED ZEROFILL">UNSIGNED ZEROFILL</option>
+	            <option value="on update CURRENT_TIMESTAMP">on update CURRENT_TIMESTAMP</option>
+            </select>
+        </td>
+		<td class="center">
+			<input name="field_null" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
+		</td>
+	    <td class="center">
+	    	<select name="field_key" id="field_0_7" data-index="">
+		    	<option value="none_0">---</option>
+			    <option value="primary_0" title="Primary">PRIMARY</option>
+			    <option value="unique_0" title="Unique">UNIQUE</option>
+			    <option value="index_0" title="Index">INDEX</option>
+	            <option value="fulltext_0" title="Fulltext">FULLTEXT</option>
+	        	<option value="spatial_0" title="Spatial">SPATIAL</option>
+        	</select>
+        </td>
+		<td class="center">
+			<input name="field_extra" id="field_0_8" value="AUTO_INCREMENT" type="checkbox">
+		</td>
 	</tr>
 </table>
 
@@ -388,13 +406,24 @@ if(dbname != null && !dbname.isEmpty())
 		var x = document.getElementById("deletetable");
 		x.value = e.id;
 	}
+	
+
+	var newCol = $(".ct-column").last().clone().addClass("hidden-column");
+	console.log(newCol);
+	newCol = newCol[0];
+	newCol.style.display = "none";
+	var hiddenCol = $(".ct-column").parent().append(newCol).children();
+	
+	
 	function add_coloumn_to_table(){
-		var newCol = $(".ct-column").last().clone();
-		$(".ct-column").parent().append(newCol).children().last().find("input[type='text']").val("");
+		var hidden = $(".hidden-column").last().clone().removeClass("hidden-column")[0];
+		console.log(hidden);
+		hidden.style.display = "";
+		$(".ct-column").parent().append(hidden);
 	}
 	
 	function default_input(e) {
-		e.parentNode.lastChild.style.display = 'initial';
+		$(e).parent().children()[1].style.display = "";
 	}
 	
 	</script>
