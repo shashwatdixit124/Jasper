@@ -179,6 +179,7 @@ body{
 
 .table-content .table-content-action{
 	width: 50px;
+	min-width: 50px;
 	text-align: center;
 	vertical-align: middle;
 	padding: 0;
@@ -204,10 +205,10 @@ body{
 .table-elem .border-right{
 	border-right: 0.5px solid #fbfbfb;
 }
-
 .table-elem:nth-child(even){
 	background-color: #fbfbfb;
 }
+
 
 .table-elem:nth-child(even) .border-right{
 	border-right: 0.5px solid #f5f5f5;
@@ -324,3 +325,19 @@ form#update-table-form .add-coloumn-btn{
 	float: left;
 }
 
+#showStructure .modal-lg{
+	width: calc( 100vw - 50px );
+}
+
+#showStructure .modal-body{
+	overflow: auto;
+}
+
+#showStructure table tr{
+	min-height: 50px;
+	background-color: #f5f5f5;
+}
+
+#showStructure table tr:nth-child(even){
+	background-color: #fbfbfb;
+}
