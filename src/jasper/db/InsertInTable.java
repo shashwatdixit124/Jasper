@@ -40,7 +40,7 @@ public class InsertInTable extends HttpServlet {
 		JasperCookie cookies = new JasperCookie(request,response);
 		
 		dbName = request.getParameter("db");
-		tname = request.getParameter("tname");
+		tname = request.getParameter("table");
 		
 		if(!cookies.exists("uname") || !cookies.exists("uname")){
 			response.sendRedirect("index.jsp");

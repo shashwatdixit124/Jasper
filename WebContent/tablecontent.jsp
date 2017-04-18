@@ -371,7 +371,7 @@ if(!qr.isError())
 											<div class="form-group">
 												<div class="col-xs-12">
 													<input type="hidden" value="<% out.print(dbname); %>" name="db">
-													<input type="hidden" value="<% out.print(tname); %>" name="tname">
+													<input type="hidden" value="<% out.print(tname); %>" name="table">
 												</div>
 											</div>
 											<div class="form-group">
