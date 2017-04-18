@@ -167,7 +167,7 @@ if(dbname != null && !dbname.isEmpty())
 											</a>
 											<div class="col-xs-12 col-sm-4 col-md-2">
 												<div class="row">
-													<a title="Edit" href="#" data-toggle="modal" data-target="#RenameTable" onclick="renamehelp(this);" id="<% out.print(tname); %>">
+													<a title="Rename" href="#" data-toggle="modal" data-target="#RenameTable" onclick="renamehelp(this);" id="<% out.print(tname); %>">
 														<div class="col-xs-6 table-action border-right">
 															<span class="glyphicon glyphicon-pencil"></span>
 														</div>
@@ -385,7 +385,7 @@ if(dbname != null && !dbname.isEmpty())
 										<h4 class="modal-title">Delete <b><% out.print(dbname); %></b></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-warning">This Action cannot be Undone.</div>
+										<div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> &nbsp;This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
 										<form class="form-horizontal" action="deleteDatabase" method="POST">
@@ -409,7 +409,7 @@ if(dbname != null && !dbname.isEmpty())
 										<h4 class="modal-title">Delete <b><span id="delete-table-form-table-name"></span></b></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-warning">This Action cannot be Undone.</div>
+										<div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> &nbsp;This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
 										<form class="form-horizontal" action="deleteTable" method="POST">

@@ -299,7 +299,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 										<h4 class="modal-title">Delete <b><% out.print(dbname+"."+tname); %></b></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-warning">This Action cannot be Undone.</div>
+										<div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> &nbsp;This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
 										<form class="form-horizontal" action="deleteTable" method="POST">
