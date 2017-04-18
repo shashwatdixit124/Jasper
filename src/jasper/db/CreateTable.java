@@ -123,9 +123,6 @@ JasperCookie cookies = new JasperCookie(request,response);
 
 				boolean has_ai = false;
 				if(ai!=null){
-					System.out.println("checking for null");
-					System.out.println(nulls.length);
-					System.out.println("Checking for null");
 					for(int j=0;j<ai.length;j++){
 						System.out.println(ai[j]);
 						if(("AI"+Integer.toString(i)).equals(ai[j]))
@@ -141,9 +138,6 @@ JasperCookie cookies = new JasperCookie(request,response);
 				
 				boolean has_null = false;
 				if(nulls!=null){
-					System.out.println("checking for null");
-					System.out.println(nulls.length);
-					System.out.println("Checking for null");
 					for(int j=0;j<nulls.length;j++){
 						System.out.println(nulls[j]);
 						if(("NULL"+Integer.toString(i)).equals(nulls[j]))
@@ -210,12 +204,12 @@ JasperCookie cookies = new JasperCookie(request,response);
 				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY( "+primary_key+" )";
 			}
 			if(!index_key.isEmpty()){
-				query += ", INDEX KEY "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
-				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;INDEX KEY "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
+				query += ", INDEX "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
+				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;INDEX "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
 			}
 			if(!unique_key.isEmpty()){
-				query += ", UNIQUE KEY "+dbName+"_"+tname+"_"+"index"+" ( "+unique_key+" )";
-				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;UNIQUE KEY "+dbName+"_"+tname+"_"+"index"+" ( "+unique_key+" )";
+				query += ", UNIQUE "+dbName+"_"+tname+"_"+"unique"+" ( "+unique_key+" )";
+				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;UNIQUE "+dbName+"_"+tname+"_"+"unique"+" ( "+unique_key+" )";
 			}
 			
 			query += " )";
