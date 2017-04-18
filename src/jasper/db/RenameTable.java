@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jasper.helper.*;
-
+import java.sql.*;
 /**
  * Servlet implementation class Createdb
  */
@@ -21,7 +21,7 @@ public class RenameTable extends HttpServlet {
 	String new_tname;
 	String uname;
 	String pass;
-	
+	int flag = 0;
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		JasperCookie cookies = new JasperCookie(request,response);
@@ -46,8 +46,36 @@ public class RenameTable extends HttpServlet {
 			String query = "RENAME TABLE " + dbName + "." + old_tname + " TO " + dbName + "." + new_tname;
 			int rows = db.executeUpdate(query);
 			
-				notification = "<div class=\"alert alert-success\">" + query + ";</div>";
+			
+			QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+			if(!qr.isError())
+			{
 		
+				ResultSet rs = qr.getResult();
+				try {
+				while(rs.next())
+				{
+					String tname = rs.getString("Tables_in_"+dbName);
+					if (tname.equals(new_tname)) {
+						flag = 1;
+						break;
+					}
+			
+				}
+				} catch(SQLException ex) {
+                    System.err.println("SQLException: " + ex.getMessage());
+				}
+				notification = "<div class=\"alert alert-success\">" + query + ";</div>";
+				if (flag == 1) {
+					notification = "<div class=\"alert alert-success\">" + query + ";</div>";
+					
+				}else {
+					
+					notification = "<div class=\"alert alert-error\">" + query + ";</div>";
+				}
+				
+				
+			}
 			
 			request.getSession().setAttribute("message", notification);
 			response.sendRedirect("table.jsp?db="+dbName);
