@@ -46,7 +46,7 @@ public class RenameTable extends HttpServlet {
 			String query = "RENAME TABLE " + dbName + "." + old_tname + " TO " + dbName + "." + new_tname;
 			int rows = db.executeUpdate(query);
 			
-				notification = "<div class=\"alert alert-warning\">" + query + ";</div>";
+				notification = "<div class=\"alert alert-success\">" + query + ";</div>";
 		
 			
 			request.getSession().setAttribute("message", notification);
