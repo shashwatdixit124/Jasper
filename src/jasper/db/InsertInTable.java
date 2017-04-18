@@ -85,12 +85,12 @@ public class InsertInTable extends HttpServlet {
 					String col_default = rs.getString("COLUMN_DEFAULT");
 					
 					if (value != null) {
-						if(!is_nullable.equalsIgnoreCase("NO") && value.isEmpty())
+						if(value.isEmpty())
 						{
-							if(!col_default.equals("NULL"))
-								query = query + "'"+col_default+"'" + ", ";
-							else
+							if(col_default == null)
 								query = query + "NULL" + ", ";
+							else
+								query = query + "'"+col_default+"'" + ", ";
 						}
 						else if(data_type.equals("tinyint"))
 							query = query + value + ", ";
