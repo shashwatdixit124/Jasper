@@ -293,12 +293,12 @@ if(dbname != null && !dbname.isEmpty())
 		</td>
 		<td class="center">
 			<select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);">
-				<option value="NONE">None</option>
+				<option value="NONE" selected="selected">None</option>
 	            <option value="USER_DEFINED">As defined:</option>
 	            <option value="NULL">NULL</option>
 	            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
             </select>
-			<input name="field_default_value" size="12" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
+			<input name="field_default_value" size="12" placeholder="Default Value" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
 		</td>
 		<td class="center">
 			<select style="width: 7em;" name="field_attribute" id="field_0_5">
@@ -409,7 +409,6 @@ if(dbname != null && !dbname.isEmpty())
 	
 
 	var newCol = $(".ct-column").last().clone().addClass("hidden-column");
-	console.log(newCol);
 	newCol = newCol[0];
 	newCol.style.display = "none";
 	var hiddenCol = $(".ct-column").parent().append(newCol).children();
@@ -423,7 +422,10 @@ if(dbname != null && !dbname.isEmpty())
 	}
 	
 	function default_input(e) {
-		$(e).parent().children()[1].style.display = "";
+		if(e.value == "USER_DEFINED")
+			$(e).parent().children()[1].style.display = "";
+		else
+			$(e).parent().children()[1].style.display = "none";
 	}
 	
 	</script>
