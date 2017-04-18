@@ -61,7 +61,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 			return;
 		}
 		
-		ArrayList<String> name = new ArrayList<String>();
+		/*ArrayList<String> name = new ArrayList<String>();
 		ArrayList<String> type = new ArrayList<String>();
 		ArrayList<String> length = new ArrayList<String>();
 		ArrayList<String> default_type = new ArrayList<String>();
@@ -69,7 +69,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 		ArrayList<String> attribute = new ArrayList<String>();
 		ArrayList<String> allow_null = new ArrayList<String>();
 		ArrayList<String> key = new ArrayList<String>();
-		ArrayList<String> auto_inc = new ArrayList<String>();
+		ArrayList<String> auto_inc = new ArrayList<String>();*/
 		
 		String[] names = request.getParameterValues("field_name");
 		String[] types = request.getParameterValues("field_type");

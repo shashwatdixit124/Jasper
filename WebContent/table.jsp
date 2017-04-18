@@ -293,12 +293,12 @@ if(dbname != null && !dbname.isEmpty())
 		</td>
 		<td class="center">
 			<select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);">
-				<option value="NONE">None</option>
+				<option value="NONE" selected="selected">None</option>
 	            <option value="USER_DEFINED">As defined:</option>
 	            <option value="NULL">NULL</option>
 	            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
             </select>
-			<input name="field_default_value" size="12" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
+			<input name="field_default_value" size="12" placeholder="Default Value" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
 		</td>
 		<td class="center">
 			<select style="width: 7em;" name="field_attribute" id="field_0_5">
@@ -310,7 +310,7 @@ if(dbname != null && !dbname.isEmpty())
             </select>
         </td>
 		<td class="center">
-			<input name="field_null" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
+			<input name="field_null" id="field_0_6" value="NULL0" class="allow_null" type="checkbox">
 		</td>
 	    <td class="center">
 	    	<select name="field_key" id="field_0_7" data-index="">
@@ -407,24 +407,35 @@ if(dbname != null && !dbname.isEmpty())
 		x.value = e.id;
 	}
 	
-
+	var null_counter = 0;
 	var newCol = $(".ct-column").last().clone().addClass("hidden-column");
+	null_counter = null_counter+1;
+	newCol.find("#field_0_6")[0].value="NULL"+null_counter;
 	console.log(newCol);
+	console.log(newCol.find("#field_0_6"));
 	newCol = newCol[0];
 	newCol.style.display = "none";
+	
 	var hiddenCol = $(".ct-column").parent().append(newCol).children();
 	
 	
 	function add_coloumn_to_table(){
-		var hidden = $(".hidden-column").last().clone().removeClass("hidden-column")[0];
+		var hidden = $(".hidden-column").last().clone().removeClass("hidden-column");
+		
+		hidden.find("#field_0_6")[0].value="NULL"+null_counter;
+		null_counter = null_counter+1;
 		console.log(hidden);
+		hidden = hidden[0];
 		hidden.style.display = "";
 		$(".ct-column").parent().append(hidden);
 	}
 	
 	function default_input(e) {
 
-		$(e).parent().children()[1].style.display = "";
+		if(e.value == "USER_DEFINED")
+			$(e).parent().children()[1].style.display = "";
+		else
+			$(e).parent().children()[1].style.display = "none";
 
 	}
 	
