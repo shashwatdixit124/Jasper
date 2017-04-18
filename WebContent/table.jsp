@@ -289,11 +289,11 @@ if(dbname != null && !dbname.isEmpty())
 			</select>
 		</td>
 		<td class="center"><input id="field_0_3" name="field_length" size="8" value="" class="textfield" type="text"><p class="enum_notice" id="enum_notice_0_3" style="display: none;"><a href="#" class="open_enum_editor">Edit ENUM/SET values</a></p></td>
-		<td class="center"><select name="field_default_type" id="field_0_4" class="default_type"><option value="NONE">None</option>
+		<td class="center"><select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);"><option value="NONE">None</option>
 		            <option value="USER_DEFINED">As defined:</option>
 		            <option value="NULL">NULL</option>
 		            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option></select>
-		<input name="field_default_value" size="12" value="" class="textfield default_value" style="display: none;" type="text"></td>
+		<input name="field_default_value" size="12" value="" class="textfield default_value" style="display: none;" type="text" id="field_default_value"></td>
 		<td class="center"><select style="width: 7em;" name="field_attribute" id="field_0_5"><option value="" selected="selected"></option>
 		            <option value="BINARY">BINARY</option>
 		            <option value="UNSIGNED">UNSIGNED</option>
@@ -391,6 +391,16 @@ if(dbname != null && !dbname.isEmpty())
 	function add_coloumn_to_table(){
 		var newCol = $(".ct-column").last().clone();
 		$(".ct-column").parent().append(newCol).children().last().find("input[type='text']").val("");
+	}
+	
+	function default_input(e) {
+		//document.getElementById("field_default_value").style.display = 'initial';
+		//var strUser = e.options[e.selectedIndex].value;
+		//e.nextSibling.style.display='initial';
+		var parent = e.parentNode;
+		e.parentNode.lastChild.style.display = 'initial';
+		console.log(e.parentNode.lastChild.nodeName);
+		
 	}
 	
 	</script>
