@@ -63,7 +63,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 			return;
 		}
 		
-		ArrayList<String> name = new ArrayList<String>();
+		/*ArrayList<String> name = new ArrayList<String>();
 		ArrayList<String> type = new ArrayList<String>();
 		ArrayList<String> length = new ArrayList<String>();
 		ArrayList<String> default_type = new ArrayList<String>();
@@ -71,7 +71,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 		ArrayList<String> attribute = new ArrayList<String>();
 		ArrayList<String> allow_null = new ArrayList<String>();
 		ArrayList<String> key = new ArrayList<String>();
-		ArrayList<String> auto_inc = new ArrayList<String>();
+		ArrayList<String> auto_inc = new ArrayList<String>();*/
 		
 		String[] names = request.getParameterValues("field_name");
 		String[] types = request.getParameterValues("field_type");
@@ -86,54 +86,42 @@ JasperCookie cookies = new JasperCookie(request,response);
 		String index_key = "";
 		String unique_key = "";
 		
-		String query = "CREATE TABLE `"+tname+"` \n( ";
-		
+		String query = "CREATE TABLE `"+tname+"` ( ";
+		String html_query = "CREATE TABLE `"+tname+"` <br>(<br>&nbsp;&nbsp;&nbsp;&nbsp;";
+		String col = "";
 		try{
 			int size = names.length;
 			for(int i=0;i<size;i++)
 			{
-	//			name.add(names[i]);
-	//			type.add(types[i]);
-	//			length.add(lengths[i]);
-	//			default_type.add(default_types[i]);
-	//			default_value.add(default_values[i]);
-	//			attribute.add(attributes[i]);
-	//			allow_null.add(allow_nulls[i]);
-	//			key.add(keys[i]);
-	//			auto_inc.add(auto_incs[i]);
-				if(names[i]==null || "".equals(nulls[i]))
+				col = "";
+				if(names[i]==null || "".equals(names[i])){
 					continue;
-				query += names[i] + " ";
-//				if(types[i]==null)
-//					System.out.println("Type : NULL");
-//				else
-//					System.out.println("Type : "+types[i]);
+				}
+				col += names[i] + " ";
+
 				if(lengths[i].isEmpty())
-					query += types[i]+ " ";
+					col += types[i]+ " ";
 				else
-					query += types[i]+"("+lengths[i]+") ";
-//				if(lengths[i]==null)
-//					System.out.println("Length : NULL");
-//				else
-//					System.out.println("Length : "+lengths[i]);
-//				if(default_types[i]==null)
-//					System.out.println("Default Type : NULL");
-//				else
-//					System.out.println("Default Type : "+default_types[i]);
+					col += types[i]+"("+lengths[i]+") ";
 				
+
+				boolean has_null = false;
 				if(nulls!=null){
-					boolean has_null = false;
+					System.out.println("checking for null");
+					System.out.println(nulls.length);
+					System.out.println("Checking for null");
 					for(int j=0;j<nulls.length;j++){
-						if(("NULL"+Integer.toString(i)).equals(nulls[i]))
+						System.out.println(nulls[j]);
+						if(("NULL"+Integer.toString(i)).equals(nulls[j]))
 						{
 							has_null = true;
 							break;
 						}
 					}
-					if(!has_null){
-						query += "NOT NULL ";
-					}
-				}				
+				}
+				if(!has_null){
+					col += "NOT NULL ";
+				}
 				
 				if(default_types[i].equals("NONE"))
 				{
@@ -141,22 +129,17 @@ JasperCookie cookies = new JasperCookie(request,response);
 				}
 				else if(default_types[i].equals("USER_DEFINED") && !default_values[i].isEmpty())
 				{
-					query += "DEFAULT "+default_values[i]+" ";
+					col += "DEFAULT "+default_values[i]+" ";
 				}
 				else {
-					query += "DEFAULT "+default_types[i]+" ";
+					col += "DEFAULT "+default_types[i]+" ";
 				}
-				
-//				if(default_values[i]==null)
-//					System.out.println("Default Value : NULL");
-//				else
-//					System.out.println("Default Value : "+default_values[i]);
-//				if(attributes[i]==null)
-//					System.out.println("Attribute : NULL");
-//				else
-//					System.out.println("Attribute : "+attributes[i]);
-				
-				
+
+				if(!attributes[i].isEmpty())
+				{
+					col += attributes[i] + " ";
+				}				
+
 				if(keys[i].equals("PRIMARY"))
 				{
 					if(primary_key.isEmpty())
@@ -179,28 +162,37 @@ JasperCookie cookies = new JasperCookie(request,response);
 						unique_key += ", `"+names[i]+"`";
 				}
 				
-				if(i != size)
+				query += col;
+				html_query+=col;
+				if(i < size-1 && size != 2)
 				{
-					query += ",\n";
-				}
-				
-			}
-			if(!primary_key.isEmpty() || !index_key.isEmpty() || !unique_key.isEmpty() )
-			{
-				query += ",\n";
-				if(!primary_key.isEmpty()){
-					query += "PRIMARY KEY( "+primary_key+" )";
-				}else if(!index_key.isEmpty()){
-					query += "INDEX KEY "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
-				}else if(!unique_key.isEmpty()){
-					query += "UNIQUE KEY "+dbName+"_"+tname+"_"+"index"+" ( "+unique_key+" )";
+					query += ",";
+					html_query+= ",<br>&nbsp;&nbsp;&nbsp;&nbsp;";
 				}
 			}
+			
+			if(!primary_key.isEmpty()){
+				query += ", PRIMARY KEY ( "+primary_key+" )";
+				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY( "+primary_key+" )";
+			}
+			if(!index_key.isEmpty()){
+				query += ", INDEX KEY "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
+				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;INDEX KEY "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
+			}
+			if(!unique_key.isEmpty()){
+				query += ", UNIQUE KEY "+dbName+"_"+tname+"_"+"index"+" ( "+unique_key+" )";
+				html_query += ",<br>&nbsp;&nbsp;&nbsp;&nbsp;UNIQUE KEY "+dbName+"_"+tname+"_"+"index"+" ( "+unique_key+" )";
+			}
+			
 			query += " )";
-		}catch(Exception e){
+			html_query += "<br>)";
+		}catch(ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
 		}
-		notification = "<div class ='alert alert-success'>"+query+";</div>";
+		
+		int rows = db.executeUpdate(query);
+		System.out.println(rows);
+		notification = "<div class ='alert alert-success'>"+html_query+";</div>";
 		request.getSession().setAttribute("message", notification);
 		response.sendRedirect("table.jsp?db="+dbName);
 	}

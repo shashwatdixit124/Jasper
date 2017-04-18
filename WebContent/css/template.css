@@ -287,4 +287,40 @@ form#create-table-form .add-coloumn-btn{
 	width: calc( 100vw - 50px );
 }
 
+#updateTable .modal-lg{
+	width: calc( 100vw - 50px );
+}
+
+form#update-table-form input[type=text]{
+	border-radius: 0px;
+	min-height: 40px;
+	padding: 5px;
+	margin: 5px 0px;
+	border: 0.5px solid #f5f5f5;
+	background-color: #f0f0f0;
+}
+
+form#update-table-form select{
+	border-radius: 0px;
+	min-height: 40px;
+	padding: 5px;
+	margin: 5px 0px;
+	border: 0.5px solid #f5f5f5;
+	background-color: #f0f0f0;
+	appearance:none;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+}
+
+form#update-table-form #table-name{
+	margin-left: 50px;
+}
+
+#updateTable .modal-body{
+	overflow: auto;
+}
+
+form#update-table-form .add-coloumn-btn{
+	float: left;
+}
 

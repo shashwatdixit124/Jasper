@@ -167,7 +167,7 @@ if(dbname != null && !dbname.isEmpty())
 											</a>
 											<div class="col-xs-12 col-sm-4 col-md-2">
 												<div class="row">
-													<a title="Edit" href="#">
+													<a title="Edit" href="#" data-toggle="modal" data-target="#RenameTable" onclick="renamehelp(this);" id="<% out.print(tname); %>">
 														<div class="col-xs-6 table-action border-right">
 															<span class="glyphicon glyphicon-pencil"></span>
 														</div>
@@ -190,6 +190,33 @@ if(dbname != null && !dbname.isEmpty())
 } 
 %>
 
+
+						<div class="modal fade" id="RenameTable" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Rename Table</h4>
+									</div>
+									<form class="form-horizontal" action="RenameTable" method="POST">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input id="rename-table-name_old" class="col-xs-12" type="hidden"  name="old_table" required>
+													<input id="rename-table-name" class="col-xs-12" type="text" placeholder="New Name" name="table" required>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<input type="submit" value="Rename" class="btn btn-default col-xs-12">
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+		
+		
 						<div class="modal fade" id="createTable" role="dialog">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
@@ -310,14 +337,14 @@ if(dbname != null && !dbname.isEmpty())
             </select>
         </td>
 		<td class="center">
-			<input name="field_null" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
+			<input name="field_null" id="field_0_6" value="NULL0" class="allow_null" type="checkbox">
 		</td>
 	    <td class="center">
 	    	<select name="field_key" id="field_0_7" data-index="">
 		    	<option value="none_0">---</option>
-			    <option value="primary_0" title="Primary">PRIMARY</option>
-			    <option value="unique_0" title="Unique">UNIQUE</option>
-			    <option value="index_0" title="Index">INDEX</option>
+			    <option value="PRIMARY" title="Primary">PRIMARY</option>
+			    <option value="UNIQUE" title="Unique">UNIQUE</option>
+			    <option value="INDEX" title="Index">INDEX</option>
         	</select>
         </td>
 		<td class="center">
@@ -341,6 +368,14 @@ if(dbname != null && !dbname.isEmpty())
 								</div>
 							</div>
 						</div>
+						
+						
+						
+						
+						
+						
+						
+						
 						
 						<div class="modal fade" id="deleteDatabase" role="dialog">
 							<div class="modal-dialog modal-sm">
@@ -398,6 +433,13 @@ if(dbname != null && !dbname.isEmpty())
 	</div>
 	<script type="text/javascript">
 	
+	function renamehelp(e) {
+		var tablename = document.getElementById("rename-table-name");
+		tablename.value = e.id;	
+		tablename = document.getElementById("rename-table-name_old");
+		tablename.value = e.id;
+	}
+	
 	function deletehelp(e) {
 		var tableName = document.getElementById("delete-table-form-table-name");
 		tableName.innerHTML = e.id;
@@ -405,25 +447,36 @@ if(dbname != null && !dbname.isEmpty())
 		x.value = e.id;
 	}
 	
-
+	var null_counter = 0;
 	var newCol = $(".ct-column").last().clone().addClass("hidden-column");
+	null_counter = null_counter+1;
+	newCol.find("#field_0_6")[0].value="NULL"+null_counter;
+	console.log(newCol);
+	console.log(newCol.find("#field_0_6"));
 	newCol = newCol[0];
 	newCol.style.display = "none";
+	
 	var hiddenCol = $(".ct-column").parent().append(newCol).children();
 	
 	
 	function add_coloumn_to_table(){
-		var hidden = $(".hidden-column").last().clone().removeClass("hidden-column")[0];
+		var hidden = $(".hidden-column").last().clone().removeClass("hidden-column");
+		
+		hidden.find("#field_0_6")[0].value="NULL"+null_counter;
+		null_counter = null_counter+1;
 		console.log(hidden);
+		hidden = hidden[0];
 		hidden.style.display = "";
 		$(".ct-column").parent().append(hidden);
 	}
 	
 	function default_input(e) {
+
 		if(e.value == "USER_DEFINED")
 			$(e).parent().children()[1].style.display = "";
 		else
 			$(e).parent().children()[1].style.display = "none";
+
 	}
 	
 	</script>
