@@ -334,7 +334,7 @@ if(!qr.isError())
 		String name = rs.getString("COLUMN_NAME");
 		String is_nullable = rs.getString("IS_NULLABLE");
 		String col_type = rs.getString("COLUMN_TYPE");
-		
+		String data_type = rs.getString("DATA_TYPE");
 		tableForInserting += "<tr>";
 		tableForInserting += "<td><label for='" + name + "'> " + name + "</label></td>";
 		tableForInserting += "<td><span class='col-type'> [ " + col_type + " ] </span></td>";
@@ -342,7 +342,15 @@ if(!qr.isError())
 		String required = "";
 		if (is_nullable.equals("NO")) {placeHolder = "Can't be empty";} else { placeHolder = "can be empty";}
 		if (is_nullable.equals("NO")) {required = "required";}
+		
+		if (data_type.equals("date")) {
+			tableForInserting += "<td><input type='date' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+			
+		} else if (data_type.equals("timestamp")) {
+			tableForInserting += "<td><input type='datetime-local' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+		} else {
 		tableForInserting += "<td><input type='text' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+		}
 		tableForInserting += "</tr>";
 	}
 	tableForInserting += "</table>";

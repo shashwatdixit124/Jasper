@@ -394,13 +394,7 @@ if(dbname != null && !dbname.isEmpty())
 	}
 	
 	function default_input(e) {
-		//document.getElementById("field_default_value").style.display = 'initial';
-		//var strUser = e.options[e.selectedIndex].value;
-		//e.nextSibling.style.display='initial';
-		var parent = e.parentNode;
 		e.parentNode.lastChild.style.display = 'initial';
-		console.log(e.parentNode.lastChild.nodeName);
-		
 	}
 	
 	</script>
