@@ -126,6 +126,16 @@ if(!cr.isError()){
 												</div>
 											</div>
 										</div>
+										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#renameTable">
+											<div class="row">
+												<div class="col-xs-12 action-icon">
+													<span class="glyphicon glyphicon-pencil"></span>
+												</div>
+												<div class="col-xs-12 action-text">
+													Rename Table
+												</div>
+											</div>
+										</div>	
 										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#deleteTable">
 											<div class="row">
 												<div class="col-xs-12 action-icon">
@@ -424,6 +434,31 @@ if(!qr.isError())
 													</div>
 												</div>
 											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						
+						<div class="modal fade" id="renameTable" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Rename Table</h4>
+									</div>
+									<form class="form-horizontal" action="RenameTable" method="POST">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input type="hidden"  name="old_table" value="<% out.print(tname); %>">
+													<input id="rename-table-name" class="col-xs-12" type="text" placeholder="New Name" name="table" required>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<input type="submit" value="Rename" class="btn btn-default col-xs-12">
 										</div>
 									</form>
 								</div>
