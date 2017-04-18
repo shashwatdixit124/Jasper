@@ -394,7 +394,14 @@ if(dbname != null && !dbname.isEmpty())
 	}
 	
 	function default_input(e) {
+		
+		var val = e.options[e.selectedIndex].value;
+		console.log(val);
+		//if (strUser == 0) {
+			//e.parentNode.lastChild.style.display = 'none';
+		//} else if (strUser == 1) {
 		e.parentNode.lastChild.style.display = 'initial';
+		//}
 	}
 	
 	</script>
