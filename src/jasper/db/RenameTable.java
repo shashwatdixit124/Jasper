@@ -1,17 +1,16 @@
 package jasper.db;
-import jasper.helper.*;
-import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
+import java.io.IOException;
+import java.sql.*;
 import jasper.helper.*;
-
 /**
  * Servlet implementation class Createdb
  */
+
+
 @WebServlet("/RenameTable")
 public class RenameTable extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -21,7 +20,7 @@ public class RenameTable extends HttpServlet {
 	String new_tname;
 	String uname;
 	String pass;
-	
+	int flag = 0;
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		JasperCookie cookies = new JasperCookie(request,response);
@@ -43,12 +42,62 @@ public class RenameTable extends HttpServlet {
 		JasperDb db = new JasperDb("",uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
+			
+			QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+			if(!qr.isError())
+			{
+		
+				ResultSet rs = qr.getResult();
+				try {
+					while(rs.next())
+					{
+						String tname = rs.getString("Tables_in_"+dbName);
+						if (tname.equals(new_tname)) {
+							flag = 1;
+							break;
+						}
+				
+					}
+					rs.close();
+				} catch(SQLException ex) {
+                    System.err.println("SQLException: " + ex.getMessage());
+				}
+			}
+			
 			String query = "RENAME TABLE " + dbName + "." + old_tname + " TO " + dbName + "." + new_tname;
 			int rows = db.executeUpdate(query);
 			
-				notification = "<div class=\"alert alert-success\">" + query + ";</div>";
-		
-			
+			qr = db.executeQuery("SHOW TABLES IN " + dbName);
+			if(!qr.isError())
+			{
+				if(flag != 1)
+				{
+					ResultSet rs = qr.getResult();
+					try {
+						while(rs.next())
+						{
+							String tname = rs.getString("Tables_in_"+dbName);
+							if (tname.equals(new_tname)) {
+								flag = 1;
+								break;
+							}
+					
+						}
+						rs.close();
+					} catch(SQLException ex) {
+	                    System.err.println("SQLException: " + ex.getMessage());
+					}
+					if (flag == 1) {						
+						notification = "<div class=\"alert alert-success\"> Table Renamed Successfully<br>" + query + ";</div>";
+					}else {						
+						notification = "<div class=\"alert alert-danger\"> Error in Renaming Table<br>" + query + ";</div>";
+					}
+				}
+				else{
+					notification = "<div class=\"alert alert-error\"> Table Already Exists<br>" + query + ";</div>";
+				}
+			}
+			db.close();
 			request.getSession().setAttribute("message", notification);
 			response.sendRedirect("table.jsp?db="+dbName);
 		}
