@@ -167,7 +167,7 @@ if(dbname != null && !dbname.isEmpty())
 											</a>
 											<div class="col-xs-12 col-sm-4 col-md-2">
 												<div class="row">
-													<a title="Edit" href="#">
+													<a title="Edit" href="#" data-toggle="modal" data-target="#RenameTable" onclick="renamehelp(this);" id="<% out.print(tname); %>">
 														<div class="col-xs-6 table-action border-right">
 															<span class="glyphicon glyphicon-pencil"></span>
 														</div>
@@ -190,6 +190,33 @@ if(dbname != null && !dbname.isEmpty())
 } 
 %>
 
+
+						<div class="modal fade" id="RenameTable" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Rename Table</h4>
+									</div>
+									<form class="form-horizontal" action="RenameTable" method="POST">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input id="rename-table-name_old" class="col-xs-12" type="hidden"  name="old_table" required>
+													<input id="rename-table-name" class="col-xs-12" type="text" placeholder="New Name" name="table" required>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<input type="submit" value="Rename" class="btn btn-default col-xs-12">
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+		
+		
 						<div class="modal fade" id="createTable" role="dialog">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
@@ -344,6 +371,14 @@ if(dbname != null && !dbname.isEmpty())
 							</div>
 						</div>
 						
+						
+						
+						
+						
+						
+						
+						
+						
 						<div class="modal fade" id="deleteDatabase" role="dialog">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
@@ -399,6 +434,13 @@ if(dbname != null && !dbname.isEmpty())
 		</div>
 	</div>
 	<script type="text/javascript">
+	
+	function renamehelp(e) {
+		var tablename = document.getElementById("rename-table-name");
+		tablename.value = e.id;	
+		tablename = document.getElementById("rename-table-name_old");
+		tablename.value = e.id;
+	}
 	
 	function deletehelp(e) {
 		var tableName = document.getElementById("delete-table-form-table-name");
