@@ -315,7 +315,7 @@ if(dbname != null && !dbname.isEmpty())
 											<div class="modal-footer">
 												<div class="form-group">
 													<div class="col-xs-12">
-														<input type="button" onClick="add_coloumn_to_table()" value="Add Coloumn" class="btn btn-default btn-lg add-coloumn-btn">
+														<input type="button" onClick="add_coloumn_to_table()" value="Add Column" class="btn btn-default btn-lg add-coloumn-btn">
 														<input type="submit" value="Create" class="btn btn-default btn-lg">
 													</div>
 												</div>
