@@ -348,7 +348,7 @@ if(dbname != null && !dbname.isEmpty())
         	</select>
         </td>
 		<td class="center">
-			<input name="field_extra" id="field_0_8" value="AUTO_INCREMENT" type="checkbox">
+			<input name="field_extra" id="field_0_8" value="AI0" type="checkbox">
 		</td>
 	</tr>
 </table>
@@ -451,19 +451,21 @@ if(dbname != null && !dbname.isEmpty())
 	var newCol = $(".ct-column").last().clone().addClass("hidden-column");
 	null_counter = null_counter+1;
 	newCol.find("#field_0_6")[0].value="NULL"+null_counter;
+	newCol.find("#field_0_8")[0].value="AI"+null_counter;
 	console.log(newCol);
 	console.log(newCol.find("#field_0_6"));
+	console.log(newCol.find("#field_0_8"));
 	newCol = newCol[0];
 	newCol.style.display = "none";
 	
-	var hiddenCol = $(".ct-column").parent().append(newCol).children();
+	var hiddenCol = $(".ct-column").parent().append(newCol);
 	
 	
 	function add_coloumn_to_table(){
 		var hidden = $(".hidden-column").last().clone().removeClass("hidden-column");
-		
-		hidden.find("#field_0_6")[0].value="NULL"+null_counter;
 		null_counter = null_counter+1;
+		hidden.find("#field_0_6")[0].value="NULL"+null_counter;
+		hidden.find("#field_0_8")[0].value="AI"+null_counter;
 		console.log(hidden);
 		hidden = hidden[0];
 		hidden.style.display = "";

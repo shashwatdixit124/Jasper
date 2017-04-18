@@ -2,6 +2,8 @@ package jasper.db;
 
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import jasper.helper.ConnectionResult;
 import jasper.helper.JasperCookie;
 import jasper.helper.JasperDb;
+import jasper.helper.QueryResult;
 
 @WebServlet("/createTable")
 public class CreateTable extends HttpServlet{
@@ -49,7 +52,6 @@ JasperCookie cookies = new JasperCookie(request,response);
 		pass = cookies.getValue("pass");
 		
 		String notification = null;
-		String data = "";
 		
 		JasperDb db = new JasperDb(dbName,uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
@@ -62,16 +64,30 @@ JasperCookie cookies = new JasperCookie(request,response);
 			response.sendRedirect("table.jsp?db="+dbName);
 			return;
 		}
+		else{
+			QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+			if(!qr.isError())
+			{
 		
-		/*ArrayList<String> name = new ArrayList<String>();
-		ArrayList<String> type = new ArrayList<String>();
-		ArrayList<String> length = new ArrayList<String>();
-		ArrayList<String> default_type = new ArrayList<String>();
-		ArrayList<String> default_value = new ArrayList<String>();
-		ArrayList<String> attribute = new ArrayList<String>();
-		ArrayList<String> allow_null = new ArrayList<String>();
-		ArrayList<String> key = new ArrayList<String>();
-		ArrayList<String> auto_inc = new ArrayList<String>();*/
+				ResultSet rs = qr.getResult();
+				try {
+					while(rs.next())
+					{
+						String table = rs.getString("Tables_in_"+dbName);
+						if (table.equals(tname)) {
+							notification = "<div class=\"alert alert-danger\"> Table `"+tname+"` Already Exists" + "</div>";
+							request.getSession().setAttribute("message", notification);
+							response.sendRedirect("table.jsp?db="+dbName);
+							return;
+						}
+				
+					}
+					rs.close();
+				} catch(SQLException ex) {
+                    System.err.println("SQLException: " + ex.getMessage());
+				}				
+			}
+		}
 		
 		String[] names = request.getParameterValues("field_name");
 		String[] types = request.getParameterValues("field_type");
@@ -81,7 +97,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 		String[] attributes = request.getParameterValues("field_attribute");
 		String[] nulls = request.getParameterValues("field_null");
 		String[] keys = request.getParameterValues("field_key");
-		String[] auto_incs = request.getParameterValues("field_extra");
+		String[] ai = request.getParameterValues("field_extra");
 		String primary_key = "";
 		String index_key = "";
 		String unique_key = "";
@@ -105,6 +121,24 @@ JasperCookie cookies = new JasperCookie(request,response);
 					col += types[i]+"("+lengths[i]+") ";
 				
 
+				boolean has_ai = false;
+				if(ai!=null){
+					System.out.println("checking for null");
+					System.out.println(nulls.length);
+					System.out.println("Checking for null");
+					for(int j=0;j<ai.length;j++){
+						System.out.println(ai[j]);
+						if(("AI"+Integer.toString(i)).equals(ai[j]))
+						{
+							has_ai = true;
+							break;
+						}
+					}
+				}
+				if(has_ai){
+					col += "AUTO_INCREMENT ";
+				}
+				
 				boolean has_null = false;
 				if(nulls!=null){
 					System.out.println("checking for null");
@@ -129,7 +163,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 				}
 				else if(default_types[i].equals("USER_DEFINED") && !default_values[i].isEmpty())
 				{
-					col += "DEFAULT "+default_values[i]+" ";
+					col += "DEFAULT '"+default_values[i]+"' ";
 				}
 				else {
 					col += "DEFAULT "+default_types[i]+" ";
@@ -191,10 +225,34 @@ JasperCookie cookies = new JasperCookie(request,response);
 		}
 		
 		int rows = db.executeUpdate(query);
-		System.out.println(rows);
-		notification = "<div class ='alert alert-success'>"+html_query+";</div>";
+
+		boolean tableExists = false;
+		QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+		if(!qr.isError())
+		{
+			ResultSet rs = qr.getResult();
+			try {
+				while(rs.next())
+				{
+					String table = rs.getString("Tables_in_"+dbName);
+					if (table.equals(tname)) {
+						tableExists = true;
+						break;
+					}
+				}
+				rs.close();
+			} catch(SQLException ex) {
+                System.err.println("SQLException: " + ex.getMessage());
+			}	
+		}
+		
+		if(tableExists)
+			notification = "<div class=\"alert alert-success\"> Table Created Successfully<br>"+ html_query + "</div>";
+		else
+			notification = "<div class ='alert alert-danger'> Error Creating table<br>"+html_query+";</div>";
 		request.getSession().setAttribute("message", notification);
 		response.sendRedirect("table.jsp?db="+dbName);
+		db.close();
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{

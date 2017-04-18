@@ -71,7 +71,7 @@ public class RenameTable extends HttpServlet {
 			String query = "RENAME TABLE " + dbName + "." + old_tname + " TO " + dbName + "." + new_tname;
 			
 			if(flag == 1){
-				notification = "<div class=\"alert alert-danger\"> Table Already Exists<br>" + query + ";</div>";
+				notification = "<div class=\"alert alert-danger\"> Table `"+new_tname+"` Already Exists" + "</div>";
 				request.getSession().setAttribute("message", notification);
 				response.sendRedirect("table.jsp?db="+dbName);
 				return;
