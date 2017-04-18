@@ -318,8 +318,6 @@ if(dbname != null && !dbname.isEmpty())
 			    <option value="primary_0" title="Primary">PRIMARY</option>
 			    <option value="unique_0" title="Unique">UNIQUE</option>
 			    <option value="index_0" title="Index">INDEX</option>
-	            <option value="fulltext_0" title="Fulltext">FULLTEXT</option>
-	        	<option value="spatial_0" title="Spatial">SPATIAL</option>
         	</select>
         </td>
 		<td class="center">

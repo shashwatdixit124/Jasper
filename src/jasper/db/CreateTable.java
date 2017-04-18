@@ -32,12 +32,16 @@ public class CreateTable extends HttpServlet{
 JasperCookie cookies = new JasperCookie(request,response);
 		
 		dbName = request.getParameter("db");
+		tname = request.getParameter("table");
 		
 		if(!cookies.exists("uname") || !cookies.exists("uname")){
 			response.sendRedirect("index.jsp");
 			return;
 		}else if(dbName == null || dbName.isEmpty()) {
 			response.sendRedirect("home.jsp");
+			return;
+		}else if(tname == null || tname.isEmpty()){
+			response.sendRedirect("table.jsp?db="+dbName);
 			return;
 		}
 		
@@ -46,8 +50,6 @@ JasperCookie cookies = new JasperCookie(request,response);
 		
 		String notification = null;
 		String data = "";
-		
-		tname = request.getParameter("table");
 		
 		JasperDb db = new JasperDb(dbName,uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
@@ -80,66 +82,126 @@ JasperCookie cookies = new JasperCookie(request,response);
 		String[] nulls = request.getParameterValues("field_null");
 		String[] keys = request.getParameterValues("field_key");
 		String[] auto_incs = request.getParameterValues("field_extra");
+		String primary_key = "";
+		String index_key = "";
+		String unique_key = "";
+		
+		String query = "CREATE TABLE `"+tname+"` \n( ";
 		
 		try{
-		for(int i=0;i<names.length;i++)
-		{
-//			name.add(names[i]);
-//			type.add(types[i]);
-//			length.add(lengths[i]);
-//			default_type.add(default_types[i]);
-//			default_value.add(default_values[i]);
-//			attribute.add(attributes[i]);
-//			allow_null.add(allow_nulls[i]);
-//			key.add(keys[i]);
-//			auto_inc.add(auto_incs[i]);
-			
-			System.out.println("Coloumn "+i);
-			if(names[i]==null)
-				continue;
-			System.out.println("Name : " + names[i]);
-			if(types[i]==null)
-				System.out.println("Type : NULL");
-			else
-				System.out.println("Type : "+types[i]);
-			if(lengths[i]==null)
-				System.out.println("Length : NULL");
-			else
-				System.out.println("Length : "+lengths[i]);
-			if(default_types[i]==null)
-				System.out.println("Default Type : NULL");
-			else
-				System.out.println("Default Type : "+default_types[i]);
-			if(default_values[i]==null)
-				System.out.println("Default Value : NULL");
-			else
-				System.out.println("Default Value : "+default_values[i]);
-			if(attributes[i]==null)
-				System.out.println("Attribute : NULL");
-			else
-				System.out.println("Attribute : "+attributes[i]);
-			if(nulls[i] == null)
-				System.out.println("NULL : NOT NULL");
-			else
-				System.out.println("NULL : NULL");
-			if(keys[i]==null)
-				System.out.println("Index : NULL");
-			else
-				System.out.println("Index : "+keys[i]);
-			if(auto_incs[i]==null)
-				System.out.println("A_I : NULL");
-			else
-				System.out.println("A_I : "+auto_incs[i]);
-			
-			
-			
-		}
+			int size = names.length;
+			for(int i=0;i<size;i++)
+			{
+	//			name.add(names[i]);
+	//			type.add(types[i]);
+	//			length.add(lengths[i]);
+	//			default_type.add(default_types[i]);
+	//			default_value.add(default_values[i]);
+	//			attribute.add(attributes[i]);
+	//			allow_null.add(allow_nulls[i]);
+	//			key.add(keys[i]);
+	//			auto_inc.add(auto_incs[i]);
+				if(names[i]==null || "".equals(nulls[i]))
+					continue;
+				query += names[i] + " ";
+//				if(types[i]==null)
+//					System.out.println("Type : NULL");
+//				else
+//					System.out.println("Type : "+types[i]);
+				if(lengths[i].isEmpty())
+					query += types[i]+ " ";
+				else
+					query += types[i]+"("+lengths[i]+") ";
+//				if(lengths[i]==null)
+//					System.out.println("Length : NULL");
+//				else
+//					System.out.println("Length : "+lengths[i]);
+//				if(default_types[i]==null)
+//					System.out.println("Default Type : NULL");
+//				else
+//					System.out.println("Default Type : "+default_types[i]);
+				
+				if(nulls!=null){
+					boolean has_null = false;
+					for(int j=0;j<nulls.length;j++){
+						if(("NULL"+Integer.toString(i)).equals(nulls[i]))
+						{
+							has_null = true;
+							break;
+						}
+					}
+					if(!has_null){
+						query += "NOT NULL ";
+					}
+				}				
+				
+				if(default_types[i].equals("NONE"))
+				{
+					// do nothing
+				}
+				else if(default_types[i].equals("USER_DEFINED") && !default_values[i].isEmpty())
+				{
+					query += "DEFAULT "+default_values[i]+" ";
+				}
+				else {
+					query += "DEFAULT "+default_types[i]+" ";
+				}
+				
+//				if(default_values[i]==null)
+//					System.out.println("Default Value : NULL");
+//				else
+//					System.out.println("Default Value : "+default_values[i]);
+//				if(attributes[i]==null)
+//					System.out.println("Attribute : NULL");
+//				else
+//					System.out.println("Attribute : "+attributes[i]);
+				
+				
+				if(keys[i].equals("PRIMARY"))
+				{
+					if(primary_key.isEmpty())
+						primary_key += "`"+names[i]+"`";
+					else
+						primary_key += ", `"+names[i]+"`";
+				}
+				else if(keys[i].equals("INDEX"))
+				{
+					if(index_key.isEmpty())
+						index_key += "`"+names[i]+"`";
+					else
+						index_key += ", `"+names[i]+"`";
+				}
+				else if(keys[i].equals("UNIQUE"))
+				{
+					if(unique_key.isEmpty())
+						unique_key += "`"+names[i]+"`";
+					else
+						unique_key += ", `"+names[i]+"`";
+				}
+				
+				if(i != size)
+				{
+					query += ",\n";
+				}
+				
+			}
+			if(!primary_key.isEmpty() || !index_key.isEmpty() || !unique_key.isEmpty() )
+			{
+				query += ",\n";
+				if(!primary_key.isEmpty()){
+					query += "PRIMARY KEY( "+primary_key+" )";
+				}else if(!index_key.isEmpty()){
+					query += "INDEX KEY "+dbName+"_"+tname+"_"+"index"+" ( "+index_key+" )";
+				}else if(!unique_key.isEmpty()){
+					query += "UNIQUE KEY "+dbName+"_"+tname+"_"+"index"+" ( "+unique_key+" )";
+				}
+			}
+			query += " )";
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		
-		
+		notification = "<div class ='alert alert-success'>"+query+";</div>";
+		request.getSession().setAttribute("message", notification);
 		response.sendRedirect("table.jsp?db="+dbName);
 	}
 	
