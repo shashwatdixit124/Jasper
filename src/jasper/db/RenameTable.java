@@ -20,8 +20,10 @@ public class RenameTable extends HttpServlet {
 	String new_tname;
 	String uname;
 	String pass;
-	int flag = 0;
+	int flag ;
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		flag = 0;
 		
 		JasperCookie cookies = new JasperCookie(request,response);
 		
