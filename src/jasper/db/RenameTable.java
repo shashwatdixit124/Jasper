@@ -94,7 +94,7 @@ public class RenameTable extends HttpServlet {
 					}
 				}
 				else{
-					notification = "<div class=\"alert alert-error\"> Table Already Exists<br>" + query + ";</div>";
+					notification = "<div class=\"alert alert-danger\"> Table Already Exists<br>" + query + ";</div>";
 				}
 			}
 			db.close();
