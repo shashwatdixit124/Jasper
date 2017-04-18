@@ -31,8 +31,12 @@ public class RenameTable extends HttpServlet {
 		
 		if(!cookies.exists("uname") || !cookies.exists("uname")){
 			response.sendRedirect("index.jsp");
+			return;
 		}else if(dbName == null || dbName.isEmpty())
+		{
 			response.sendRedirect("home.jsp");
+			return;
+		}
 		
 		uname = cookies.getValue("uname");
 		pass = cookies.getValue("pass");
@@ -61,40 +65,43 @@ public class RenameTable extends HttpServlet {
 					rs.close();
 				} catch(SQLException ex) {
                     System.err.println("SQLException: " + ex.getMessage());
-				}
+				}				
 			}
 			
 			String query = "RENAME TABLE " + dbName + "." + old_tname + " TO " + dbName + "." + new_tname;
+			
+			if(flag == 1){
+				notification = "<div class=\"alert alert-danger\"> Table Already Exists<br>" + query + ";</div>";
+				request.getSession().setAttribute("message", notification);
+				response.sendRedirect("table.jsp?db="+dbName);
+				return;
+			}
+			
 			int rows = db.executeUpdate(query);
 			
 			qr = db.executeQuery("SHOW TABLES IN " + dbName);
 			if(!qr.isError())
 			{
-				if(flag != 1)
-				{
-					ResultSet rs = qr.getResult();
-					try {
-						while(rs.next())
-						{
-							String tname = rs.getString("Tables_in_"+dbName);
-							if (tname.equals(new_tname)) {
-								flag = 1;
-								break;
-							}
-					
+				
+				ResultSet rs = qr.getResult();
+				try {
+					while(rs.next())
+					{
+						String tname = rs.getString("Tables_in_"+dbName);
+						if (tname.equals(new_tname)) {
+							flag = 1;
+							break;
 						}
-						rs.close();
-					} catch(SQLException ex) {
-	                    System.err.println("SQLException: " + ex.getMessage());
+				
 					}
-					if (flag == 1) {						
-						notification = "<div class=\"alert alert-success\"> Table Renamed Successfully<br>" + query + ";</div>";
-					}else {						
-						notification = "<div class=\"alert alert-danger\"> Error in Renaming Table<br>" + query + ";</div>";
-					}
+					rs.close();
+				} catch(SQLException ex) {
+                    System.err.println("SQLException: " + ex.getMessage());
 				}
-				else{
-					notification = "<div class=\"alert alert-danger\"> Table Already Exists<br>" + query + ";</div>";
+				if (flag == 1) {						
+					notification = "<div class=\"alert alert-success\"> Table Renamed Successfully<br>" + query + ";</div>";
+				}else {						
+					notification = "<div class=\"alert alert-danger\"> Error in Renaming Table<br>" + query + ";</div>";
 				}
 			}
 			db.close();
