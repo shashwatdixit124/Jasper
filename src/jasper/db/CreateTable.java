@@ -65,7 +65,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 			return;
 		}
 		else{
-			QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+			QueryResult qr = db.executeQuery("SHOW TABLES IN `" + dbName + "`");
 			if(!qr.isError())
 			{
 		
@@ -223,7 +223,7 @@ JasperCookie cookies = new JasperCookie(request,response);
 		int rows = db.executeUpdate(query);
 
 		boolean tableExists = false;
-		QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+		QueryResult qr = db.executeQuery("SHOW TABLES IN `" + dbName + "`");
 		if(!qr.isError())
 		{
 			ResultSet rs = qr.getResult();

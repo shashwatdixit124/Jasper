@@ -47,7 +47,7 @@ public class DeleteTable extends HttpServlet{
 		JasperDb db = new JasperDb(dbName,uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
-			String query = "DROP TABLE " + tname;
+			String query = "DROP TABLE `" + tname + "`";
 			int rows = db.executeUpdate(query);
 			request.getSession().setAttribute("message", notification);
 			response.sendRedirect("table.jsp?db="+dbName);

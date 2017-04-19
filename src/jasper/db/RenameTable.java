@@ -49,7 +49,7 @@ public class RenameTable extends HttpServlet {
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
 			
-			QueryResult qr = db.executeQuery("SHOW TABLES IN " + dbName);
+			QueryResult qr = db.executeQuery("SHOW TABLES IN `" + dbName + "`");
 			if(!qr.isError())
 			{
 		
@@ -70,7 +70,7 @@ public class RenameTable extends HttpServlet {
 				}				
 			}
 			
-			String query = "RENAME TABLE " + dbName + "." + old_tname + " TO " + dbName + "." + new_tname;
+			String query = "RENAME TABLE `" + dbName + "." + old_tname + "` TO `" + dbName + "." + new_tname + "`";
 			
 			if(flag == 1){
 				notification = "<div class=\"alert alert-danger\"> Table `"+new_tname+"` Already Exists" + "</div>";

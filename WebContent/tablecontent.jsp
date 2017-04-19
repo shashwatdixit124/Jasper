@@ -215,7 +215,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 	{
 		response.sendRedirect("home.jsp");
 	}
-	qr = db.executeQuery("SELECT * FROM "+tname);
+	qr = db.executeQuery("SELECT * FROM `"+tname + "`");
 	if(!qr.isError())
 	{
 		ResultSet rs = qr.getResult();
