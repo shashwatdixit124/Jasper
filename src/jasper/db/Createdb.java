@@ -39,7 +39,7 @@ public class Createdb extends HttpServlet {
 		JasperDb db = new JasperDb("",uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
-			String query = "CREATE DATABASE " + dbName;
+			String query = "CREATE DATABASE `" + dbName + "`";
 			int rows = db.executeUpdate(query);
 			if(rows == 0){
 				notification = "<div class=\"alert alert-warning\">Error Creating Database</div>";

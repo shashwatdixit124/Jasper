@@ -44,7 +44,7 @@ public class Deletedb extends HttpServlet{
 		JasperDb db = new JasperDb("",uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
-			String query = "DROP DATABASE " + dbName;
+			String query = "DROP DATABASE `" + dbName + "`";
 			int rows = db.executeUpdate(query);
 			request.getSession().setAttribute("message", notification);
 			response.sendRedirect("home.jsp");
