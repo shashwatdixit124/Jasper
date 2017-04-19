@@ -89,6 +89,8 @@ JasperCookie cookies = new JasperCookie(request,response);
 			}
 		}
 		
+		
+		
 		String[] names = request.getParameterValues("field_name");
 		String[] types = request.getParameterValues("field_type");
 		String[] lengths = request.getParameterValues("field_length");
