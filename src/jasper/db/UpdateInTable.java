@@ -77,6 +77,7 @@ public class UpdateInTable extends HttpServlet{
 							query = query + name + "='" + value + "'" + ", ";
 					}
 				}
+				rs.close();
 			} catch(SQLException ex) {
 				notification = "<div class=\"alert alert-danger\">"+
 									"SQLError ("+ex.getSQLState()+") <br>"+
@@ -107,13 +108,13 @@ public class UpdateInTable extends HttpServlet{
 			int rows = db1.executeUpdate(query);
 			if(rows == 0){
 				notification = "<div class=\"alert alert-danger\">"+
-									"Error Inserting Row<br>"+
+									"Error Updating Row<br>"+
 									query+";"+
 								"</div>";
 			}
 			else{
 				notification = "<div class=\"alert alert-success\">"+
-									"Row Inserted<br>"+
+									"Row Updated<br>"+
 									query+";"+
 								"</div>";
 			}
@@ -127,6 +128,7 @@ public class UpdateInTable extends HttpServlet{
 		}
 		request.getSession().setAttribute("message", notification);
 		response.sendRedirect("tablecontent.jsp?db=" + dbName + "&table=" + tname);
-		
+		db.close();
+		db1.close();
     }
 }

@@ -155,9 +155,12 @@ JasperCookie cookies = new JasperCookie(request,response);
 				{
 					// do nothing
 				}
-				else if(default_types[i].equals("USER_DEFINED") && !default_values[i].isEmpty())
+				else if(default_types[i].equals("USER_DEFINED"))
 				{
-					col += "DEFAULT '"+default_values[i]+"' ";
+					if(!default_values[i].isEmpty())
+						col += "DEFAULT '"+default_values[i]+"' ";
+					else
+						col += "DEFAULT '' ";
 				}
 				else {
 					col += "DEFAULT "+default_types[i]+" ";
