@@ -1242,6 +1242,7 @@ $(".ct-column").parent().append(hidden_col);
 						column.find("#field_0_3").val(value.find("#field_0_3").val());
 						column.find("#field_0_4").val(value.find("#field_0_4").val());
 						column.find("#field_0_4").next().val(value.find("#field_0_4").next().val());
+						default_input(column.find("#field_0_4")[0]);
 						column.find("#field_0_5").val(value.find("#field_0_5").val());
 						column.find("#field_0_6").prop("checked",value.find("#field_0_6").prop("checked"));
 						column.find("#field_0_7").val(value.find("#field_0_7").val());
