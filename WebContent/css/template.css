@@ -86,6 +86,10 @@ body{
 	background-color: #f6f6f6;
 }
 
+table tr{
+	height: 50px;
+}
+
 .action-bar{
 	position: absolute;
 	top: 0;
@@ -340,4 +344,41 @@ form#update-table-form .add-coloumn-btn{
 
 #showStructure table tr:nth-child(even){
 	background-color: #fbfbfb;
+}
+
+form#edit-table-structure-form input[type=text]{
+	border-radius: 0px;
+	min-height: 40px;
+	padding: 5px;
+	margin: 5px 0px;
+	border: 0.5px solid #f5f5f5;
+	background-color: #f0f0f0;
+}
+
+form#edit-table-structure-form select{
+	border-radius: 0px;
+	min-height: 40px;
+	padding: 5px;
+	margin: 5px 0px;
+	border: 0.5px solid #f5f5f5;
+	background-color: #f0f0f0;
+	appearance:none;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+}
+
+form#edit-table-structure-form #table-name{
+	margin-left: 50px;
+}
+
+#editStructure .modal-body{
+	overflow: auto;
+}
+
+form#edit-table-structure-form .add-coloumn-btn{
+	float: left;
+}
+
+#editStructure .modal-lg{
+	width: calc( 100vw - 50px );
 }
