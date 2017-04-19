@@ -126,6 +126,26 @@ if(!cr.isError()){
 												</div>
 											</div>
 										</div>
+										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#showStructure">
+											<div class="row">
+												<div class="col-xs-12 action-icon">
+													<span class="glyphicon glyphicon-list-alt"></span>
+												</div>
+												<div class="col-xs-12 action-text">
+													Show Structure
+												</div>
+											</div>
+										</div>
+										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#renameTable">
+											<div class="row">
+												<div class="col-xs-12 action-icon">
+													<span class="glyphicon glyphicon-pencil"></span>
+												</div>
+												<div class="col-xs-12 action-text">
+													Rename Table
+												</div>
+											</div>
+										</div>
 										<div class="col-xs-2 action-widget border-right" data-toggle="modal" data-target="#deleteTable">
 											<div class="row">
 												<div class="col-xs-12 action-icon">
@@ -259,14 +279,14 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 					convData += str;
 				}
 %>
-											<td class="table-content-action border-right">
+											<td class="table-content-action">
 												<div title="Edit" id="<% out.print(convData); %>" data-toggle="modal" data-target="#editTableContent" onClick="updateEditForm(this)">
 													<div class="table-content-action-icon">
 														<span class="glyphicon glyphicon-pencil"></span>
 													</div>
 												</div>
 											</td>
-											<td class="table-content-action border-right">
+											<td class="table-content-action">
 												<a title="Delete" href="deleteInTable?<% out.print("db="+dbname+"&table="+tname+"&data="+convData); %>">
 													<div class="table-content-action-icon">
 														<span class="glyphicon glyphicon-trash"></span>
@@ -299,7 +319,7 @@ if(dbname != null && !dbname.isEmpty() && tname != null && !tname.isEmpty())
 										<h4 class="modal-title">Delete <b><% out.print(dbname+"."+tname); %></b></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-warning">This Action cannot be Undone.</div>
+										<div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> &nbsp;This Action cannot be Undone.</div>
 									</div>
 									<div class="modal-footer">
 										<form class="form-horizontal" action="deleteTable" method="POST">
@@ -424,6 +444,89 @@ if(!qr.isError())
 													</div>
 												</div>
 											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						
+						<div class="modal fade" id="showStructure" role="dialog">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Table Structure</h4>
+									</div>
+									<div class="modal-body">
+										<table class='table table-stripped col-xs-12'>
+											<tr>
+												<th>Field</th>
+												<th>Type</th>
+												<th>Null</th>
+												<th>Key</th>
+												<th>Default</th>
+												<th>Extra</th>
+											</tr>
+										
+<%
+db = new JasperDb(dbname,uname,pass);
+if(db.getConnectionResult().isError())
+{
+	session.setAttribute("message", "<div class='alert alert-danger'>Error in Connecting to Database "+dbname+"</div>");
+	response.sendRedirect("home.jsp");
+}
+qr = db.executeQuery("DESC "+tname);
+if(!qr.isError())
+{
+	ResultSet rs = qr.getResult();
+	while(rs.next())
+	{		
+		String field = rs.getString("Field");
+		String type = rs.getString("Type");
+		String isNull = rs.getString("Null");
+		String key = rs.getString("Key");
+		String default_val = rs.getString("Default");
+		String extra = rs.getString("Extra");
+%>
+											<tr>
+											<td><% out.print(field); %></td>
+											<td><% out.print(type); %></td>
+											<td><% out.print(isNull); %></td>
+											<td><% out.print(key); %></td>
+											<td><% out.print(default_val); %></td>
+											<td><% out.print(extra); %></td>
+											</tr>
+<%
+	}
+	rs.close();
+	db.close();
+}
+%>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="modal fade" id="renameTable" role="dialog">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Rename Table</h4>
+									</div>
+									<form class="form-horizontal" action="RenameTable" method="POST">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="col-xs-12">
+													<input type="hidden" value="<% out.print(dbname); %>" name="db">
+													<input type="hidden"  name="old_table" value="<% out.print(tname); %>">
+													<input id="rename-table-name" class="col-xs-12" type="text" placeholder="New Name" name="table" required>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<input type="submit" value="Rename" class="btn btn-default col-xs-12">
 										</div>
 									</form>
 								</div>
