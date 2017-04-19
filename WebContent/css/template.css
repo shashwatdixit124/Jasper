@@ -382,3 +382,50 @@ form#edit-table-structure-form .add-coloumn-btn{
 #editStructure .modal-lg{
 	width: calc( 100vw - 50px );
 }
+
+form#edit-table-structure-alt-form input[type=text]{
+	border-radius: 0px;
+	min-height: 40px;
+	padding: 5px;
+	margin: 5px 0px;
+	border: 0.5px solid #f5f5f5;
+	background-color: #f0f0f0;
+}
+
+form#edit-table-structure-alt-form select{
+	border-radius: 0px;
+	min-height: 40px;
+	padding: 5px;
+	margin: 5px 0px;
+	border: 0.5px solid #f5f5f5;
+	background-color: #f0f0f0;
+	appearance:none;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+}
+
+form#edit-table-structure-alt-form #table-name{
+	margin-left: 50px;
+}
+
+#editStructureAlternate .modal-body{
+	overflow: auto;
+}
+
+form#edit-table-structure-alt-form .add-coloumn-btn{
+	float: left;
+}
+
+#editStructureAlternate .modal-lg{
+	width: calc( 100vw - 50px );
+}
+
+form#edit-table-structure-alt-form .select-column-div{
+	margin: 50px;
+}
+
+form#edit-table-structure-alt-form #selectColumnName{
+	min-width: 200px;
+	margin-left : 50px;
+}
+
