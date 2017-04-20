@@ -32,7 +32,7 @@ public class CreateTable extends HttpServlet{
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
-JasperCookie cookies = new JasperCookie(request,response);
+		JasperCookie cookies = new JasperCookie(request,response);
 		
 		dbName = request.getParameter("db");
 		tname = request.getParameter("table");
@@ -126,7 +126,6 @@ JasperCookie cookies = new JasperCookie(request,response);
 				boolean has_ai = false;
 				if(ai!=null){
 					for(int j=0;j<ai.length;j++){
-						System.out.println(ai[j]);
 						if(("AI"+Integer.toString(i)).equals(ai[j]))
 						{
 							has_ai = true;
@@ -141,7 +140,6 @@ JasperCookie cookies = new JasperCookie(request,response);
 				boolean has_null = false;
 				if(nulls!=null){
 					for(int j=0;j<nulls.length;j++){
-						System.out.println(nulls[j]);
 						if(("NULL"+Integer.toString(i)).equals(nulls[j]))
 						{
 							has_null = true;

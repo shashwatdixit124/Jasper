@@ -30,7 +30,6 @@ public class DeleteTable extends HttpServlet{
 		
 		dbName = request.getParameter("db");
 		tname = request.getParameter("table");
-		System.out.println(dbName + " " + tname);
 		
 		if(!cookies.exists("uname") || !cookies.exists("uname"))
 			response.sendRedirect("index.jsp");
