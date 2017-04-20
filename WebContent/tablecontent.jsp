@@ -539,7 +539,7 @@ ArrayList<String> isAutoInc = new ArrayList<String>();
 
 int colNo = 0;
 
-String columnOptionList = "<select name=\"column_name\" id='selectColumnName'><option value='' selected='selected'>Select Column</option>";
+String columnOptionList = "<option value='' selected='selected'>Select Column</option>";
 
 if(!qr.isError())
 {
@@ -628,7 +628,6 @@ if(!qr.isError())
 		
 		colNo++;
 	}
-	columnOptionList += "</select>";
 }
 db.close();
 %>
@@ -807,12 +806,12 @@ db.close();
 										<button type="button" class="close" data-dismiss="modal">&times;</button>
 										<h4 class="modal-title">Rename Table</h4>
 									</div>
-									<form class="form-horizontal" action="#" method="POST" id="edit-table-structure-alt-form">
+									<form class="form-horizontal" action="editTableStructure" method="POST" id="edit-table-structure-alt-form">
 										<div class="modal-body">
 											<div class="form-group">
 												<div class="col-xs-12">
 													<input type="hidden" value="<% out.print(dbname); %>" name="db">
-													<input type="hidden"  name="old_table" value="<% out.print(tname); %>">
+													<input type="hidden"  name="table" value="<% out.print(tname); %>">
 													<input id="edit-action" type="hidden" value="ADD" name="edit-action">
 												</div>
 											</div>
@@ -826,7 +825,7 @@ db.close();
 												</div>
 											</div>
 											<div class="form-group" id="addColumnForm">
-											<div class="select-column-div">Add Column After : <% out.print(columnOptionList); %></div>
+											<div class="select-column-div">Add Column After : <select name="add_after_column_name" id='selectColumnName'><% out.print(columnOptionList); %><option value="FIRST">AT FIRST POSITION</option></select></div>
 											<div class="col-xs-12">
 											<table class="table table-stripped col-xs-12">
 												<tr>
@@ -841,10 +840,10 @@ db.close();
 												</tr>
 												<tr class="et-column">
 													<td class="center">
-														<input id="field_0_1" name="field_name" maxlength="64" class="textfield" title="Column" size="10" value="" type="text">
+														<input id="field_0_1" name="field_name_add" maxlength="64" class="textfield" title="Column" size="10" value="" type="text">
 													</td>
 													<td class="center">
-														<select class="column_type" name="field_type" id="field_0_2">
+														<select class="column_type" name="field_type_add" id="field_0_2">
 															<option title="A 4-byte integer, signed range is -2,147,483,648 to 2,147,483,647, unsigned range is 0 to 4,294,967,295">INT</option>
 															<option title="A variable-length (0-65,535) string, the effective maximum length is subject to the maximum row size">VARCHAR</option>
 															<option title="A TEXT column with a maximum length of 65,535 (2^16 - 1) characters, stored with a two-byte prefix indicating the length of the value in bytes">TEXT</option>
@@ -902,16 +901,16 @@ db.close();
 														</select>
 													</td>
 													<td class="center">
-														<input id="field_0_3" name="field_length" size="8" value="" class="textfield" type="text">
+														<input id="field_0_3" name="field_length_add" size="8" value="" class="textfield" type="text">
 													</td>
 													<td class="center">
-														<select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);">
+														<select name="field_default_type_add" id="field_0_4" class="default_type" onChange="default_input(this);">
 															<option title="Empty String Literal" value="NONE" selected="selected">None</option>
 												            <option value="USER_DEFINED">As defined:</option>
 												            <option value="NULL">NULL</option>
 												            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
 											            </select>
-														<input name="field_default_value" size="12" placeholder="Default Value" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
+														<input name="field_default_value_add" size="12" placeholder="Default Value" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
 													</td>
 													<td class="center">
 														<select style="width: 7em;" name="field_attribute" id="field_0_5">
@@ -923,25 +922,17 @@ db.close();
 											            </select>
 											        </td>
 													<td class="center">
-														<input name="field_null" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
+														<input name="field_null_add" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
 													</td>
-												    <td class="center">
-												    	<select name="field_key" id="field_0_7" data-index="">
-													    	<option value="none_0">---</option>
-														    <option value="PRIMARY" title="Primary">PRIMARY</option>
-														    <option value="UNIQUE" title="Unique">UNIQUE</option>
-														    <option value="INDEX" title="Index">INDEX</option>
-											        	</select>
-											        </td>
 													<td class="center">
-														<input name="field_extra" id="field_0_8" value="AI" type="checkbox">
+														<input name="field_extra_add" id="field_0_8" value="AI" type="checkbox">
 													</td>
 												</tr>
 												</table>
 												</div>
 											</div>
 											<div class="form-group" id="changeColumnForm" style="display:none;">
-												<div class="select-column-div">Select Column To Change : <% out.print(columnOptionList); %></div>
+												<div class="select-column-div">Select Column To Change : <select name="edit_column_name" id='selectColumnName'><% out.print(columnOptionList); %></select></div>
 												<div class="col-xs-12">
 												<table class="table table-stripped col-xs-12">
 												<tr>
@@ -956,10 +947,10 @@ db.close();
 												</tr>
 												<tr class="et-column">
 													<td class="center">
-														<input id="field_0_1" name="field_name" maxlength="64" class="textfield" title="Column" size="10" value="" type="text">
+														<input id="field_0_1" name="field_name_change" maxlength="64" class="textfield" title="Column" size="10" value="" type="text">
 													</td>
 													<td class="center">
-														<select class="column_type" name="field_type" id="field_0_2">
+														<select class="column_type" name="field_type_change" id="field_0_2">
 															<option title="A 4-byte integer, signed range is -2,147,483,648 to 2,147,483,647, unsigned range is 0 to 4,294,967,295">INT</option>
 															<option title="A variable-length (0-65,535) string, the effective maximum length is subject to the maximum row size">VARCHAR</option>
 															<option title="A TEXT column with a maximum length of 65,535 (2^16 - 1) characters, stored with a two-byte prefix indicating the length of the value in bytes">TEXT</option>
@@ -1017,19 +1008,19 @@ db.close();
 														</select>
 													</td>
 													<td class="center">
-														<input id="field_0_3" name="field_length" size="8" value="" class="textfield" type="text">
+														<input id="field_0_3" name="field_length_change" size="8" value="" class="textfield" type="text">
 													</td>
 													<td class="center">
-														<select name="field_default_type" id="field_0_4" class="default_type" onChange="default_input(this);">
+														<select name="field_default_type_change" id="field_0_4" class="default_type" onChange="default_input(this);">
 															<option title="Empty String Literal" value="NONE" selected="selected">None</option>
 												            <option value="USER_DEFINED">As defined:</option>
 												            <option value="NULL">NULL</option>
 												            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
 											            </select>
-														<input name="field_default_value" size="12" placeholder="Default Value" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
+														<input name="field_default_value_change" size="12" placeholder="Default Value" value="" class="textfield default_value" style="display: none;" type="text"  id="field_default_value">
 													</td>
 													<td class="center">
-														<select style="width: 7em;" name="field_attribute" id="field_0_5">
+														<select style="width: 7em;" name="field_attribute_change" id="field_0_5">
 															<option value="" selected="selected"></option>
 												            <option value="BINARY">BINARY</option>
 												            <option value="UNSIGNED">UNSIGNED</option>
@@ -1038,25 +1029,17 @@ db.close();
 											            </select>
 											        </td>
 													<td class="center">
-														<input name="field_null" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
+														<input name="field_null_change" id="field_0_6" value="NULL" class="allow_null" type="checkbox">
 													</td>
-												    <td class="center">
-												    	<select name="field_key" id="field_0_7" data-index="">
-													    	<option value="none_0">---</option>
-														    <option value="PRIMARY" title="Primary">PRIMARY</option>
-														    <option value="UNIQUE" title="Unique">UNIQUE</option>
-														    <option value="INDEX" title="Index">INDEX</option>
-											        	</select>
-											        </td>
 													<td class="center">
-														<input name="field_extra" id="field_0_8" value="AI" type="checkbox">
+														<input name="field_extra_change" id="field_0_8" value="AI" type="checkbox">
 													</td>
 												</tr>
 												</table>
 												</div>
 											</div>
 											<div onClick="dropColumnClicked()" class="form-group" id="dropColumnForm" style="display:none;">
-												<div class="select-column-div"> Select Column To Drop : <% out.print(columnOptionList); %></div>
+												<div class="select-column-div"> Select Column To Drop : <select name="drop_column_name" id='selectColumnName'><% out.print(columnOptionList); %></select></div>
 											</div>
 										</div>
 										<div class="modal-footer">
@@ -1207,6 +1190,8 @@ $(".ct-column").parent().append(hidden_col);
 		}
 		
 		function addColumnClicked(){
+			$("#edit-action").val("ADD");
+			console.log($("#edit-action").val());
 			$("#addColumnForm")[0].style.display = "";
 			$("#changeColumnForm")[0].style.display = "none";
 			$("#dropColumnForm")[0].style.display = "none";
@@ -1215,6 +1200,8 @@ $(".ct-column").parent().append(hidden_col);
 			$("#edit-form-nav-tabs").children().last().removeClass("active");
 		}
 		function changeColumnClicked(){
+			$("#edit-action").val("CHANGE");
+			console.log($("#edit-action").val());
 			$("#addColumnForm")[0].style.display = "none";
 			$("#changeColumnForm")[0].style.display = "";
 			$("#dropColumnForm")[0].style.display = "none";
@@ -1223,6 +1210,8 @@ $(".ct-column").parent().append(hidden_col);
 			$("#edit-form-nav-tabs").children().last().removeClass("active");
 		}
 		function dropColumnClicked(){
+			$("#edit-action").val("DROP");
+			console.log($("#edit-action").val());
 			$("#addColumnForm")[0].style.display = "none";
 			$("#changeColumnForm")[0].style.display = "none";
 			$("#dropColumnForm")[0].style.display = "";
@@ -1245,7 +1234,6 @@ $(".ct-column").parent().append(hidden_col);
 						default_input(column.find("#field_0_4")[0]);
 						column.find("#field_0_5").val(value.find("#field_0_5").val());
 						column.find("#field_0_6").prop("checked",value.find("#field_0_6").prop("checked"));
-						column.find("#field_0_7").val(value.find("#field_0_7").val());
 						column.find("#field_0_8").prop("checked",value.find("#field_0_8").prop("checked"));		
 					}
 				});
