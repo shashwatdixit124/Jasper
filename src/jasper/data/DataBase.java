@@ -26,7 +26,7 @@ public class DataBase {
 		return error;
 	}
 	
-	public ArrayList<String> getDatabaseList(String uname, String pass)
+	public ArrayList<String> getDatabaseList()
 	{
 		db.usePrev();
 		
@@ -62,7 +62,7 @@ public class DataBase {
 		return list;
 	}
 	
-	public ArrayList<String> getTableList(String dbname, String uname, String pass)
+	public ArrayList<String> getTableList()
 	{
 		db.usePrev();
 		
@@ -80,7 +80,7 @@ public class DataBase {
 				try{
 					while(rs.next())
 					{
-						String data = rs.getString("Database");
+						String data = rs.getString("Tables_in_"+database);
 						list.add(data);
 					}
 					rs.close();

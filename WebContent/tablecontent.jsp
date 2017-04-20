@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*,jasper.helper.*,java.util.*" %> 
+<%@ page import="java.sql.*,jasper.helper.*,java.util.*,jasper.data.*" %> 
 
 <%
 	String errorNotification = (String)session.getAttribute("message");
@@ -80,29 +80,19 @@
 					<div class="col-xs-12" id="db-list">
 						<div class="row">
 <%
-JasperDb db = new JasperDb("",uname,pass);
-ConnectionResult cr = db.getConnectionResult();
-if(!cr.isError()){
-	String query = "SHOW DATABASES";
-	QueryResult qr = db.executeQuery(query);
-
-	if(qr.isError())
-		errorNotification = "<div class=\"alert alert-danger\">Cannot Find Database List</div>";
-	else{
-		ResultSet rs = qr.getResult();
-		while(rs.next())
-		{
-			String data = rs.getString("Database");
+DataBase db1 = new DataBase("",uname,pass);
+ArrayList<String> databaseList = db1.getDatabaseList();
+if(databaseList.size() != 0){
+	Iterator<String> itr = databaseList.iterator();
+	while(itr.hasNext())
+	{
+		String data = itr.next();
 %>
-							<a href="table.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db <% if(data.equals(dbname)) out.print("active"); %>"><% out.print(data); %></h4></a>
+		<a href="table.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db <% if(data.equals(dbname)) out.print("active"); %>"><% out.print(data); %></h4></a>
 <%
-		}
-		rs.close();
 	}
-	db.close();
 }
 %>
-
 						</div>
 					</div>
 				</div>
@@ -181,7 +171,7 @@ if(!cr.isError()){
 List<String> columns = new ArrayList<String>();
 List<String> data_types = new ArrayList<String>();
 
-db = new JasperDb("information_schema",uname,pass);
+JasperDb db = new JasperDb("information_schema",uname,pass);
 if(db.getConnectionResult().isError())
 {
 	session.setAttribute("message", "<div class='alert alert-danger'>Error in Connecting to Database information_schema</div>");
@@ -272,22 +262,7 @@ if(!qr.isError())
 				else
 					out.println("<td class='table-data-value' id='"+column+"'>"+val+"</td>");
 			}
-			long len = where_clause.length();
-			String convData = "";
-			char ch ;
-			int temp;
-			String str = "";
-			for(int i = 0;i<len;i++)
-			{
-				ch = where_clause.charAt(i);
-				temp = (int)ch;
-				str = Integer.toString(temp);
-				if(str.length() == 2)
-					str = "0" + str;
-				else if(str.length() == 1)
-					str = "00" + str;
-				convData += str;
-			}
+			String convData = AsciiString.getAsciiFromString(where_clause);
 %>
 											<td class="table-content-action">
 												<div title="Edit" id="<% out.print(convData); %>" data-toggle="modal" data-target="#editTableContent" onClick="updateEditForm(this)">
@@ -343,67 +318,7 @@ if(!qr.isError())
 								</div>
 							</div>
 						</div>
-						
-<%
-String tableForInserting = "";
-db = new JasperDb("information_schema",uname,pass);
-if(db.getConnectionResult().isError())
-{
-	session.setAttribute("message", "<div class='alert alert-danger'>Error in Connecting to Database information_schema</div>");
-	response.sendRedirect("home.jsp?db="+dbname);
-}
-qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
-if(!qr.isError())
-{
-	tableForInserting += "<table class='col-xs-12'>";
-	ResultSet rs = qr.getResult();
-	while(rs.next())
-	{
-		String name = rs.getString("COLUMN_NAME");
-		String is_nullable = rs.getString("IS_NULLABLE");
-		String col_type = rs.getString("COLUMN_TYPE");
-		String data_type = rs.getString("DATA_TYPE");
-		String col_default = rs.getString("COLUMN_DEFAULT");
-		tableForInserting += "<tr>";
-		tableForInserting += "<td><label for='" + name + "'> " + name + "</label></td>";
-		tableForInserting += "<td><span class='col-type'> [ " + col_type + " ] </span></td>";
-		String placeHolder = null;
-		String required = "";
-		
-		if (is_nullable.equals("NO"))
-		{
-			if(!rs.wasNull() && !"NULL".equals(col_type))
-				placeHolder = "can be empty";
-			else
-				placeHolder = "can't be empty";
-		} 
-		else 
-		{ 
-			placeHolder = "can be empty";
-		}
-		
-		if (is_nullable.equals("NO")) 
-		{
-			if(rs.wasNull() || "NULL".equals(col_type))
-				required = "required";
-		}
-		
-		if (data_type.equals("date")) {
-			tableForInserting += "<td><input type='date' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
-			
-		} else if (data_type.equals("timestamp")) {
-			tableForInserting += "<td><input type='datetime-local' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
-		} else {
-		tableForInserting += "<td><input type='text' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
-		}
-		tableForInserting += "</tr>";
-	}
-	tableForInserting += "</table>";
-	rs.close();
-	db.close();
-}
-%>
-						
+												
 						<div class="modal fade" id="insertInTable" role="dialog">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
@@ -422,7 +337,10 @@ if(!qr.isError())
 											<div class="form-group">
 												<div class="col-xs-12">
 													
-												<% out.print(tableForInserting); %>
+												<% 
+													Table dTable = new Table(dbname, tname, uname, pass);
+													out.print(dTable.getInsertTableHTML()); 
+												%>
 													
 												</div>
 											</div>
@@ -458,7 +376,9 @@ if(!qr.isError())
 											<div class="form-group">
 												<div class="col-xs-12">
 														
-													<% out.print(tableForInserting); %>
+												<% 
+													out.print(dTable.getInsertTableHTML()); 
+												%>
 														
 												</div>
 											</div>
@@ -483,53 +403,9 @@ if(!qr.isError())
 										<h4 class="modal-title">Table Structure</h4>
 									</div>
 									<div class="modal-body">
-										<table class='table table-stripped col-xs-12'>
-											<tr>
-												<th>Field</th>
-												<th>Type</th>
-												<th>Null</th>
-												<th>Key</th>
-												<th>Default</th>
-												<th>Extra</th>
-											</tr>
-										
-<%
-db = new JasperDb(dbname,uname,pass);
-if(db.getConnectionResult().isError())
-{
-	session.setAttribute("message", "<div class='alert alert-danger'>Error in Connecting to Database "+dbname+"</div>");
-	response.sendRedirect("home.jsp?db="+dbname);
-}
-qr = db.executeQuery("DESC "+tname);
-if(!qr.isError())
-{
-	ResultSet rs = qr.getResult();
-	while(rs.next())
-	{		
-		String field = rs.getString("Field");
-		String type = rs.getString("Type");
-		String isNull = rs.getString("Null");
-		String key = rs.getString("Key");
-		String default_val = rs.getString("Default");
-		if(rs.wasNull())
-			default_val = null;
-		String extra = rs.getString("Extra");
-%>
-											<tr>
-											<td><% out.print(field); %></td>
-											<td><% out.print(type); %></td>
-											<td><% out.print(isNull); %></td>
-											<td><% out.print(key); %></td>
-											<td><% if(default_val!=null) out.print(default_val); else out.print("NULL"); %></td>
-											<td><% out.print(extra); %></td>
-											</tr>
-<%
-	}
-	rs.close();
-	db.close();
-}
-%>
-										</table>
+										<% 
+											out.print(dTable.getDescriptionHTML());
+										%>
 									</div>
 								</div>
 							</div>
@@ -1174,7 +1050,7 @@ while(col_counter < colNo)
 	}
 	out.print("\n$.each(hidden_col.find(\"#field_0_5\").find(\"option\"),function(key,value){if(value.value == \""+attributes.get(col_counter)+"\")value.selected=\"selected\";});");
 	out.print("\n$.each(hidden_col.find(\"#field_0_7\").find(\"option\"),function(key,value){if(value.value == \""+keys.get(col_counter)+"\")value.selected=\"selected\";});");
-	
+
 %>
 
 hidden_col = hidden_col[0];

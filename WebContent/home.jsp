@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*,jasper.helper.*" %> 
+<%@ page import="java.sql.*,jasper.helper.*,jasper.data.*,java.util.*" %> 
 
 <%
 	String errorNotification = (String)session.getAttribute("message");
@@ -65,29 +65,19 @@
 					<div class="col-xs-12" id="db-list">
 						<div class="row">
 <%
-JasperDb db = new JasperDb("",uname,pass);
-ConnectionResult cr = db.getConnectionResult();
-if(!cr.isError()){
-	String query = "SHOW DATABASES";
-	QueryResult qr = db.executeQuery(query);
-
-	if(qr.isError())
-		errorNotification = "<div class=\"alert alert-danger\">Cannot Find Database List</div>";
-	else{
-		ResultSet rs = qr.getResult();
-		while(rs.next())
-		{
-			String data = rs.getString("Database");
+DataBase db = new DataBase("",uname,pass);
+ArrayList<String> databaseList = db.getDatabaseList();
+if(databaseList.size() != 0){
+	Iterator<String> itr = databaseList.iterator();
+	while(itr.hasNext())
+	{
+		String data = itr.next();
 %>
-							<a href="table.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db"><% out.print(data); %></h4></a>
+		<a href="table.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db "><% out.print(data); %></h4></a>
 <%
-		}
-		rs.close();
 	}
-	db.close();
 }
 %>
-
 						</div>
 					</div>
 				</div>

@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*,jasper.helper.*" %> 
+<%@ page import="java.sql.*,jasper.helper.*,jasper.data.*,java.util.*" %> 
 
 <%
 	String errorNotification = (String)session.getAttribute("message");
@@ -68,29 +68,19 @@
 					<div class="col-xs-12" id="db-list">
 						<div class="row">
 <%
-JasperDb db = new JasperDb("",uname,pass);
-ConnectionResult cr = db.getConnectionResult();
-if(!cr.isError()){
-	String query = "SHOW DATABASES";
-	QueryResult qr = db.executeQuery(query);
-
-	if(qr.isError())
-		errorNotification = "<div class=\"alert alert-danger\">Cannot Find Database List</div>";
-	else{
-		ResultSet rs = qr.getResult();
-		while(rs.next())
-		{
-			String data = rs.getString("Database");
+DataBase db = new DataBase("",uname,pass);
+ArrayList<String> databaseList = db.getDatabaseList();
+if(databaseList.size() != 0){
+	Iterator<String> itr = databaseList.iterator();
+	while(itr.hasNext())
+	{
+		String data = itr.next();
 %>
-							<a href="table.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db <% if(data.equals(dbname)) out.print("active"); %>"><% out.print(data); %></h4></a>
+		<a href="table.jsp?db=<% out.print(data); %>" ><h4 class="col-xs-12 height-30 db <% if(data.equals(dbname)) out.print("active"); %>"><% out.print(data); %></h4></a>
 <%
-		}
-		rs.close();
 	}
-	db.close();
 }
 %>
-
 						</div>
 					</div>
 				</div>
@@ -140,22 +130,24 @@ if(!cr.isError()){
 <%
 if(dbname != null && !dbname.isEmpty())
 {
-	db = new JasperDb(dbname,uname,pass);
-	if(db.getConnectionResult().isError())
+	DataBase db2 = new DataBase(dbname,uname,pass);
+	ArrayList<String> tableList = db2.getTableList();
+	if(tableList.size() == 0)
 	{
 		response.sendRedirect("home.jsp");
+		return;
 	}
-	QueryResult qr = db.executeQuery("SHOW TABLES");
-	if(!qr.isError())
+	else
 	{
+		Iterator<String> itr2 = tableList.iterator();
 %>
 						<div class="col-xs-12">
 							<div  id="table-list">
 <%
-		ResultSet rs = qr.getResult();
-		while(rs.next())
+		
+		while(itr2.hasNext())
 		{
-			String tname = rs.getString("Tables_in_"+dbname);
+			String tname = itr2.next();
 	
 %>
 									<div class ="col-xs-12 table-elem height-50" >
@@ -182,14 +174,13 @@ if(dbname != null && !dbname.isEmpty())
 										</div>
 									</div> 
 						
-<%		} %>
+<%
+		}
+	}
+}
+%>
 							</div>
 						</div>
-<%
-	}
-} 
-%>
-
 
 						<div class="modal fade" id="RenameTable" role="dialog">
 							<div class="modal-dialog modal-sm">

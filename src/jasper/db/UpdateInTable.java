@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jasper.helper.AsciiString;
 import jasper.helper.JasperCookie;
 import jasper.helper.JasperDb;
 import jasper.helper.QueryResult;
@@ -90,18 +91,7 @@ public class UpdateInTable extends HttpServlet{
 
 			query = query.substring(0, query.length()-2);
 			
-			long len = data.length();
-			String actualData = "";
-			char ch ;
-			int temp;
-			String str = "";
-			for(int i = 0;i<len;i+=3)
-			{
-				str = data.substring(i, i+3);
-				temp = Integer.parseInt(str);
-				ch = (char)temp;
-				actualData += ch;
-			}
+			String actualData = AsciiString.getStringFromAscii(data);
 			
 			query = "UPDATE `" + tname + "` SET "+query+ " WHERE " +actualData;
 			System.out.println(query);

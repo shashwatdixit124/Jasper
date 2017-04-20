@@ -28,16 +28,16 @@ public class Table {
 		return error;
 	}
 	
-	public String getInsertTableHTML(String uname,String pass,String dbname,String tname)
+	public String getInsertTableHTML()
 	{
 		String tableForInserting = "";
 		if(db.getConnectionResult().isError())
 		{
-			error = "Error in Connecting to Database "+dbname;
+			error = "Error in Connecting to Database "+database;
 			return "";
 		}
 		db.usePrev();
-		QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+dbname+"\" and TABLE_NAME = \""+tname+"\"");
+		QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+database+"\" and TABLE_NAME = \""+table+"\"");
 		if(!qr.isError())
 		{
 			tableForInserting = "<table class='col-xs-12'>";
@@ -112,7 +112,7 @@ public class Table {
 		if(!qr.isError())
 		{
 			tableForDesc = "<table class='table table-stripped col-xs-12'>";
-			tableForDesc = "<tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>";
+			tableForDesc += "<tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>";
 			ResultSet rs = qr.getResult();
 			try{
 				while(rs.next())
@@ -125,7 +125,7 @@ public class Table {
 					if(rs.wasNull())
 						default_val = null;
 					String extra = rs.getString("Extra");
-					tableForDesc = "<tr>";
+					tableForDesc += "<tr>";
 					tableForDesc += "<td>"+field+"</td>";
 					tableForDesc += "<td>"+type+"</td>";
 					tableForDesc += "<td>"+isNull+"</td>";
@@ -135,7 +135,7 @@ public class Table {
 					else
 						tableForDesc += "<td>NULL</td>";
 					tableForDesc += "<td>"+extra+"</td>";
-					tableForDesc = "</tr>";
+					tableForDesc += "</tr>";
 			
 				}
 				rs.close();
@@ -146,7 +146,7 @@ public class Table {
 				e.printStackTrace();
 			}
 			db.close();
-			tableForDesc = "</table>";
+			tableForDesc += "</table>";
 		}
 		return tableForDesc;
 	}
