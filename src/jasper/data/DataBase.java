@@ -6,19 +6,32 @@ import java.util.*;
 
 public class DataBase {
 
-	private static String error = "";
+	private String error = "";
+	private String database = "";
+	private String user = "";
+	private String pass = "";
 	
-	public static String getError()
+	private JasperDb db;
+	
+	public DataBase(String dbname,String uname,String passwd)
+	{
+		database = dbname;
+		user = uname;
+		pass = passwd;
+		db = new JasperDb(database,user,pass);
+	}
+	
+	public String getErrorMessage()
 	{
 		return error;
 	}
 	
-	public static ArrayList<String> getDatabaseList(String uname, String pass)
+	public ArrayList<String> getDatabaseList(String uname, String pass)
 	{
-		JasperDb db = new JasperDb("",uname,pass);
+		db.usePrev();
 		
 		ConnectionResult cr = db.getConnectionResult();
-		ArrayList<String> list = null;
+		ArrayList<String> list = new ArrayList<String>();;
 		
 		if(!cr.isError()){
 			String query = "SHOW DATABASES";
@@ -27,7 +40,6 @@ public class DataBase {
 			if(qr.isError())
 				error = "Cannot Find Database List";
 			else{
-				list = new ArrayList<String>();
 				ResultSet rs = qr.getResult();
 				try{
 					while(rs.next())
@@ -50,12 +62,12 @@ public class DataBase {
 		return list;
 	}
 	
-	public static ArrayList<String> getTableList(String dbname, String uname, String pass)
+	public ArrayList<String> getTableList(String dbname, String uname, String pass)
 	{
-		JasperDb db = new JasperDb(dbname,uname,pass);
+		db.usePrev();
 		
 		ConnectionResult cr = db.getConnectionResult();
-		ArrayList<String> list = null;
+		ArrayList<String> list = new ArrayList<String>();
 		
 		if(!cr.isError()){
 			String query = "SHOW TABLES";
@@ -64,7 +76,6 @@ public class DataBase {
 			if(qr.isError())
 				error = "Cannot Find Table List";
 			else{
-				list = new ArrayList<String>();
 				ResultSet rs = qr.getResult();
 				try{
 					while(rs.next())
