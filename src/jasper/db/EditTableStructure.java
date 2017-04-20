@@ -79,22 +79,19 @@ public class EditTableStructure extends HttpServlet{
 				String length = request.getParameter("field_length_add");
 				String isNull = request.getParameter("field_null_add");
 				String attribute = request.getParameter("field_attribute_add");
-				String auto_inc = request.getParameter("field_extra_add");
-				
-				System.out.println(name);
-				System.out.println(type);
-				System.out.println(length);
-				System.out.println(default_type);
-				System.out.println(default_value);
-				System.out.println(isNull);
-				System.out.println(attribute);
-				System.out.println(auto_inc);
-				
-				
+				String auto_inc = request.getParameter("field_extra_add");		
 				
 				if(name != null)
 				{
-					query = "ALTER TABLE `"+tname+"` ADD `"+name+"` ";
+					if(!name.isEmpty())
+						query = "ALTER TABLE `"+tname+"` ADD `"+name+"` ";
+					else
+					{
+						notification = "<div class='alert alert-danger'>No Column Name Specified</div>";
+						request.getSession().setAttribute("message", notification);
+						response.sendRedirect("tablecontent.jsp?db="+dbName+"&table="+tname);
+						return;
+					}
 				}
 				else
 				{

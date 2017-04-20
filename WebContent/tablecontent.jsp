@@ -30,7 +30,7 @@
 	
 	uname = cookies.getValue("uname");
 	pass = cookies.getValue("pass");
-	
+
 %>
 
 <html>
