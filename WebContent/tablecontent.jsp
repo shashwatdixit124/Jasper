@@ -363,13 +363,30 @@ if(!qr.isError())
 		String is_nullable = rs.getString("IS_NULLABLE");
 		String col_type = rs.getString("COLUMN_TYPE");
 		String data_type = rs.getString("DATA_TYPE");
+		String col_default = rs.getString("COLUMN_DEFAULT");
 		tableForInserting += "<tr>";
 		tableForInserting += "<td><label for='" + name + "'> " + name + "</label></td>";
 		tableForInserting += "<td><span class='col-type'> [ " + col_type + " ] </span></td>";
 		String placeHolder = null;
 		String required = "";
-		if (is_nullable.equals("NO")) {placeHolder = "Can't be empty";} else { placeHolder = "can be empty";}
-		if (is_nullable.equals("NO")) {required = "required";}
+		
+		if (is_nullable.equals("NO"))
+		{
+			if(!rs.wasNull() && !"NULL".equals(col_type))
+				placeHolder = "can be empty";
+			else
+				placeHolder = "can't be empty";
+		} 
+		else 
+		{ 
+			placeHolder = "can be empty";
+		}
+		
+		if (is_nullable.equals("NO")) 
+		{
+			if(rs.wasNull() || "NULL".equals(col_type))
+				required = "required";
+		}
 		
 		if (data_type.equals("date")) {
 			tableForInserting += "<td><input type='date' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
@@ -769,7 +786,7 @@ db.close();
 												</div>
 											</div>
 										</div>
-									</form>									
+									</form>				
 								</div>
 							</div>
 						</div>
@@ -835,7 +852,6 @@ db.close();
 												    <th>Default</th>
 												    <th>Attributes</th>
 												    <th><abbr title="Can be NULL if checked, NOT NULL if unchecked">Null</abbr></th>
-												    <th>Index</th>
 												    <th><abbr title="AUTO_INCREMENT">A_I</abbr></th>
 												</tr>
 												<tr class="et-column">
@@ -942,7 +958,6 @@ db.close();
 												    <th>Default</th>
 												    <th>Attributes</th>
 												    <th><abbr title="Can be NULL if checked, NOT NULL if unchecked">Null</abbr></th>
-												    <th>Index</th>
 												    <th><abbr title="AUTO_INCREMENT">A_I</abbr></th>
 												</tr>
 												<tr class="et-column">
