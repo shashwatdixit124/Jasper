@@ -21,6 +21,7 @@ public class Table {
 		user = uname;
 		pass = passwd;
 		db = new JasperDb(database,user,pass);
+		System.out.println(database+"."+table);
 	}
 	
 	public String getErrorMessage()
@@ -36,64 +37,67 @@ public class Table {
 			error = "Error in Connecting to Database "+database;
 			return "";
 		}
-		db.usePrev();
-		QueryResult qr = db.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+database+"\" and TABLE_NAME = \""+table+"\"");
-		if(!qr.isError())
+		else
 		{
-			tableForInserting = "<table class='col-xs-12'>";
-			ResultSet rs = qr.getResult();
-			try{
-				while(rs.next())
-				{
-					String name = rs.getString("COLUMN_NAME");
-					String is_nullable = rs.getString("IS_NULLABLE");
-					String col_type = rs.getString("COLUMN_TYPE");
-					String data_type = rs.getString("DATA_TYPE");
-					String col_default = rs.getString("COLUMN_DEFAULT");
-					tableForInserting += "<tr>";
-					tableForInserting += "<td><label for='" + name + "'> " + name + "</label></td>";
-					tableForInserting += "<td><span class='col-type'> [ " + col_type + " ] </span></td>";
-					String placeHolder = null;
-					String required = "";
-					
-					if (is_nullable.equals("NO"))
+			JasperDb db1 = new JasperDb("information_schema",user,pass); 
+			QueryResult qr = db1.executeQuery("select * from COLUMNS where TABLE_SCHEMA = \""+database+"\" and TABLE_NAME = \""+table+"\"");
+			if(!qr.isError())
+			{
+				tableForInserting = "<table class='col-xs-12'>";
+				ResultSet rs = qr.getResult();
+				try{
+					while(rs.next())
 					{
-						if(!rs.wasNull() && !"NULL".equals(col_default))
-							placeHolder = "can be empty";
-						else
-							placeHolder = "can't be empty";
-					}
-					else
-					{
-						placeHolder = "can be empty";
-					}
-					
-					if (is_nullable.equals("NO")) 
-					{
-						if(rs.wasNull() || "NULL".equals(col_default))
-							required = "required";
-					}
-					
-					if (data_type.equals("date")) {
-						tableForInserting += "<td><input type='date' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+						String name = rs.getString("COLUMN_NAME");
+						String is_nullable = rs.getString("IS_NULLABLE");
+						String col_type = rs.getString("COLUMN_TYPE");
+						String data_type = rs.getString("DATA_TYPE");
+						String col_default = rs.getString("COLUMN_DEFAULT");
+						tableForInserting += "<tr>";
+						tableForInserting += "<td><label for='" + name + "'> " + name + "</label></td>";
+						tableForInserting += "<td><span class='col-type'> [ " + col_type + " ] </span></td>";
+						String placeHolder = null;
+						String required = "";
 						
+						if (is_nullable.equals("NO"))
+						{
+							if(!rs.wasNull() && !"NULL".equals(col_default))
+								placeHolder = "can be empty";
+							else
+								placeHolder = "can't be empty";
+						}
+						else
+						{
+							placeHolder = "can be empty";
+						}
+						
+						if (is_nullable.equals("NO")) 
+						{
+							if(rs.wasNull() || "NULL".equals(col_default))
+								required = "required";
+						}
+						
+						if (data_type.equals("date")) {
+							tableForInserting += "<td><input type='date' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+							
+						}
+						else if (data_type.equals("timestamp")) {
+							tableForInserting += "<td><input type='datetime-local' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+						}
+						else {
+							tableForInserting += "<td><input type='text' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
+						}
+						tableForInserting += "</tr>";
 					}
-					else if (data_type.equals("timestamp")) {
-						tableForInserting += "<td><input type='datetime-local' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
-					}
-					else {
-						tableForInserting += "<td><input type='text' name='"+name+"' id='"+name+"' placeholder=\"" +placeHolder+ "\" " +required+ " ></td>";
-					}
-					tableForInserting += "</tr>";
+					rs.close();
 				}
-				rs.close();
+				catch(Exception e){
+					error = "Error in Reading Data From "+table;
+					e.printStackTrace();
+				}
+				tableForInserting += "</table>";
+				db1.close();
 			}
-			catch(Exception e){
-				error = "Error in Reading Data From "+table;
-				e.printStackTrace();
-			}
-			tableForInserting += "</table>";
-			db.close();
 		}
 		
 		return tableForInserting;

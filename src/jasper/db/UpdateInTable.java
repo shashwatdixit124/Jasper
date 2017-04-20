@@ -68,15 +68,22 @@ public class UpdateInTable extends HttpServlet{
 					String is_nullable = rs.getString("IS_NULLABLE");
 					String value = request.getParameter(name);
 					String data_type = rs.getString("DATA_TYPE");
+					String col_default = rs.getString("COLUMN_DEFAULT");
 					
 					if (value != null) {
-						if(!is_nullable.equalsIgnoreCase("NO") && value.isEmpty())
-							query = query + name + "=NULL" + ", ";
+						if(value.isEmpty())
+						{
+							if(col_default == null)
+								query = query + name +"=NULL" + ", ";
+							else
+								query = query + name + "="+"'"+col_default+"'" + ", ";
+						}
 						else if(data_type.equals("tinyint"))
-							query = query + name + "=" + value + ", ";
+							query = query + value + ", ";
 						else
-							query = query + name + "='" + value + "'" + ", ";
+							query = query + name+"="+"'" + value + "'" + ", ";
 					}
+					
 				}
 				rs.close();
 			} catch(SQLException ex) {
