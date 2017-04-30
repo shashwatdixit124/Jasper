@@ -68,7 +68,7 @@ $ ./startup.sh
 
 ![Create Table](Images/create_table.png)
 
-* _You Get a Notigication if action was Sucessfull._
+* _You Get a Notification if action was Sucessfull._
 
 ![Response](Images/user_notification.png)
 
