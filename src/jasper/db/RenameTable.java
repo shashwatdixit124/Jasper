@@ -6,10 +6,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.*;
 import jasper.helper.*;
-/**
- * Servlet implementation class Createdb
- */
-
 
 @WebServlet("/RenameTable")
 public class RenameTable extends HttpServlet {
@@ -34,9 +30,13 @@ public class RenameTable extends HttpServlet {
 		if(!cookies.exists("uname") || !cookies.exists("uname")){
 			response.sendRedirect("index.jsp");
 			return;
-		}else if(dbName == null || dbName.isEmpty())
+		}else if(dbName == null || "".equals(dbName))
 		{
 			response.sendRedirect("home.jsp");
+			return;
+		}else if(old_tname == null || "".equals(old_tname))
+		{
+			response.sendRedirect("table.jsp?db="+dbName);
 			return;
 		}
 		
@@ -45,39 +45,32 @@ public class RenameTable extends HttpServlet {
 		
 		String notification = null;
 		
-		JasperDb db = new JasperDb("",uname,pass);
+		JasperDb db = new JasperDb(dbName,uname,pass);
 		ConnectionResult cr = db.getConnectionResult();
 		if(!cr.isError()){
 			
 			QueryResult qr = db.executeQuery("SHOW TABLES IN `" + dbName + "`");
 			if(!qr.isError())
 			{
-		
 				ResultSet rs = qr.getResult();
 				try {
 					while(rs.next())
 					{
 						String tname = rs.getString("Tables_in_"+dbName);
 						if (tname.equals(new_tname)) {
-							flag = 1;
-							break;
+							notification = "<div class=\"alert alert-danger\"> Table `"+new_tname+"` Already Exists" + "</div>";
+							request.getSession().setAttribute("message", notification);
+							response.sendRedirect("table.jsp?db="+dbName);
+							return;
 						}
-				
 					}
 					rs.close();
 				} catch(SQLException ex) {
-                    System.err.println("SQLException: " + ex.getMessage());
-				}				
+					System.err.println("SQLException: " + ex.getMessage());
+				}
 			}
 			
-			String query = "RENAME TABLE `" + dbName + "." + old_tname + "` TO `" + dbName + "." + new_tname + "`";
-			
-			if(flag == 1){
-				notification = "<div class=\"alert alert-danger\"> Table `"+new_tname+"` Already Exists" + "</div>";
-				request.getSession().setAttribute("message", notification);
-				response.sendRedirect("table.jsp?db="+dbName);
-				return;
-			}
+			String query = "RENAME TABLE `" + old_tname + "` TO `" + new_tname + "`";
 			
 			int rows = db.executeUpdate(query);
 			
@@ -94,15 +87,14 @@ public class RenameTable extends HttpServlet {
 							flag = 1;
 							break;
 						}
-				
 					}
 					rs.close();
 				} catch(SQLException ex) {
                     System.err.println("SQLException: " + ex.getMessage());
 				}
-				if (flag == 1) {						
+				if (flag == 1) {
 					notification = "<div class=\"alert alert-success\"> Table Renamed Successfully<br>" + query + ";</div>";
-				}else {						
+				}else {
 					notification = "<div class=\"alert alert-danger\"> Error in Renaming Table<br>" + query + ";</div>";
 				}
 			}
